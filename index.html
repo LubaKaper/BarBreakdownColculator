@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bar Break-Even Calculator | Daily Drinks Needed</title>
+  <style>
+    :root{
+      --bg:#f5f7fb;
+      --card:#ffffff;
+      --text:#0f1724;
+      --muted:#58606a;
+      --accent:#0b67ff;
+      --danger:#d9534f;
+      --radius:10px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body{height:100%;margin:0}
+    body{
+      background:linear-gradient(180deg,#f5f7fb 0%, #eef3fb 100%);
+      color:var(--text);
+      display:flex;align-items:center;justify-content:center;
+      padding:24px;
+    }
+    .card{
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:0 6px 20px rgba(11,103,255,0.06), 0 1px 2px rgba(16,24,40,0.04);
+      max-width:720px;
+      width:100%;
+      padding:28px;
+      box-sizing:border-box;
+    }
+    h1{font-size:18px;margin:0 0 8px}
+    p.lead{margin:0 0 18px;color:var(--muted);font-size:13px}
+    form .grid{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+    }
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    input[type=number]{
+      width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6e9ef;font-size:15px;
+      box-sizing:border-box;color:var(--text)
+    }
+    .full{grid-column:1/-1}
+    .actions{display:flex;gap:12px;margin-top:14px;align-items:center}
+    button{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:8px;font-weight:600;cursor:pointer}
+    button:disabled{opacity:0.6;cursor:not-allowed}
+    .result{
+      margin-top:18px;padding:16px;border-radius:8px;background:#f3f7ff;border:1px solid #e6efff;color:var(--text);
+    }
+    .result h2{margin:0 0 6px;font-size:16px}
+    .muted{color:var(--muted);font-size:13px}
+    .error{color:var(--danger);font-size:13px;margin-top:8px}
+    @media (max-width:640px){
+      .card{padding:18px}
+      form .grid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="card" role="main">
+    <h1>Bar Break-Even Calculator</h1>
+    <p class="lead">Estimate how many drinks you need to sell per day to cover rent and labor costs.</p>
+
+    <form id="calcForm" novalidate>
+      <div class="grid">
+        <div>
+          <label for="rent">Monthly Rent ($)</label>
+          <input id="rent" name="rent" type="number" min="0" step="0.01" placeholder="e.g. 4000" required>
+        </div>
+
+        <div>
+          <label for="labor">Monthly Labor Costs ($)</label>
+          <input id="labor" name="labor" type="number" min="0" step="0.01" placeholder="e.g. 8000" required>
+        </div>
+
+        <div>
+          <label for="cost">Cost to Make One Drink ($)</label>
+          <input id="cost" name="cost" type="number" min="0" step="0.01" placeholder="e.g. 1.20" required>
+        </div>
+
+        <div>
+          <label for="price">Selling Price Per Drink ($)</label>
+          <input id="price" name="price" type="number" min="0" step="0.01" placeholder="e.g. 6.50" required>
+        </div>
+
+        <div class="full">
+          <label for="days">Days Open Per Month</label>
+          <input id="days" name="days" type="number" min="1" step="1" value="30" required>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="calculate">Calculate</button>
+        <div class="muted">All fields are required. Prices in $.</div>
+      </div>
+
+      <div id="error" class="error" role="alert" aria-live="polite" style="display:none"></div>
+
+      <div id="result" class="result" role="status" aria-live="polite" style="display:none">
+        <h2 id="headline"></h2>
+        <div id="details" class="muted"></div>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    (function(){
+      const form = document.getElementById('calcForm');
+      const rentEl = document.getElementById('rent');
+      const laborEl = document.getElementById('labor');
+      const costEl = document.getElementById('cost');
+      const priceEl = document.getElementById('price');
+      const daysEl = document.getElementById('days');
+      const errEl = document.getElementById('error');
+      const resultEl = document.getElementById('result');
+      const headline = document.getElementById('headline');
+      const details = document.getElementById('details');
+      const btn = document.getElementById('calculate');
+
+      function formatMoney(n){
+        return Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+      }
+
+      function showError(message){
+        errEl.textContent = message;
+        errEl.style.display = 'block';
+        resultEl.style.display = 'none';
+      }
+
+      function clearError(){
+        errEl.textContent = '';
+        errEl.style.display = 'none';
+      }
+
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        clearError();
+
+        const rent = parseFloat(rentEl.value);
+        const labor = parseFloat(laborEl.value);
+        const cost = parseFloat(costEl.value);
+        const price = parseFloat(priceEl.value);
+        const days = parseInt(daysEl.value,10);
+
+        // Basic validation
+        if (Number.isNaN(rent) || rent < 0 || Number.isNaN(labor) || labor < 0 || Number.isNaN(cost) || cost < 0 || Number.isNaN(price) || price < 0 || Number.isNaN(days) || days < 1) {
+          showError('Please enter valid non-negative numbers for all fields (days must be at least 1).');
+          return;
+        }
+
+        if (price <= cost) {
+          showError('Selling price must be higher than the cost to make a drink to generate profit.');
+          return;
+        }
+
+        const profitPerDrink = price - cost; // formula
+        const totalMonthly = rent + labor;
+        const monthlyDrinks = totalMonthly / profitPerDrink; // total monthly drinks needed
+        const drinksPerDay = monthlyDrinks / days;
+
+        // Display results
+        const drinksPerDayRounded = Math.ceil(drinksPerDay);
+        headline.textContent = `You need to sell ${drinksPerDayRounded} drink${drinksPerDayRounded === 1 ? '' : 's'} per day to cover rent and labor costs`;
+
+        details.innerHTML = `Profit per drink: $${formatMoney(profitPerDrink)}<br>
+                             Total monthly drinks needed: ${formatMoney(monthlyDrinks)} (${drinksPerDayRounded} /day rounded up)<br>
+                             Days open per month: ${days}<br>
+                             Monthly costs to cover: $${formatMoney(totalMonthly)}`;
+
+        resultEl.style.display = 'block';
+      });
+
+      // Optional: clear error when user corrects selling/ cost fields
+      [priceEl,costEl].forEach(el => el.addEventListener('input', clearError));
+
+    })();
+  </script>
+</body>
+</html>
