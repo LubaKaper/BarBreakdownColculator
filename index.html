@@ -4,128 +4,330 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bar Break-Even Calculator | Daily Drinks Needed</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#f5f7fb;
-      --card:#ffffff;
-      --text:#0f1724;
-      --muted:#58606a;
-      --accent:#0b67ff;
-      --danger:#d9534f;
-      --radius:10px;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      /* Core colors */
+      --bg:#1a1e2c;
+      --card:#242938;
+      --text:#e9ecf2;
+      --muted:#8791a3;
+      --accent:#ffc043;
+      --accent-hover:#ffcf70;
+      --success:#4ade80;
+      --warning:#fbbf24;
+      --danger:#f87171;
+      --input-bg:#1f2332;
+      --input-border:#2f3649;
+      
+      /* Measurements */
+      --radius:12px;
+      --card-shadow: 0 4px 24px rgba(0,0,0,0.2);
+      --transition: all 0.2s ease;
+      
+      font-family: 'DM Sans', system-ui, -apple-system, "Segoe UI", Roboto, Arial;
     }
-    html,body{height:100%;margin:0}
+    html,body{height:100%;margin:0;background:var(--bg)}
     body{
-      background:linear-gradient(180deg,#f5f7fb 0%, #eef3fb 100%);
+      background:linear-gradient(180deg, var(--bg) 0%, #141722 100%);
       color:var(--text);
-      display:flex;align-items:center;justify-content:center;
+      display:flex;
+      align-items:center;
+      justify-content:center;
       padding:24px;
+      line-height:1.5;
+    }
+    .container {
+      max-width:920px;
+      width:100%;
+      display:grid;
+      gap:24px;
+      grid-template-columns:1fr;
     }
     .card{
       background:var(--card);
       border-radius:var(--radius);
-      box-shadow:0 6px 20px rgba(11,103,255,0.06), 0 1px 2px rgba(16,24,40,0.04);
-      max-width:720px;
-      width:100%;
-      padding:28px;
+      box-shadow:var(--card-shadow);
+      padding:32px;
       box-sizing:border-box;
+      transition:var(--transition);
     }
-    h1{font-size:18px;margin:0 0 8px}
-    p.lead{margin:0 0 18px;color:var(--muted);font-size:13px}
+    h1{
+      font-size:24px;
+      margin:0 0 12px;
+      background:linear-gradient(120deg, var(--accent) 0%, var(--accent-hover) 100%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      font-weight:600;
+    }
+    p.lead{
+      margin:0 0 32px;
+      color:var(--muted);
+      font-size:15px;
+      max-width:580px;
+    }
     form .grid{
-      display:grid;grid-template-columns:repeat(2,1fr);gap:12px;
+      display:grid;
+      grid-template-columns:repeat(2,1fr);
+      gap:18px;
     }
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    .field-icon{
+      font-size:20px;
+      margin-right:8px;
+      opacity:0.9;
+    }
+    label{
+      display:flex;
+      align-items:center;
+      font-size:14px;
+      color:var(--muted);
+      margin-bottom:8px;
+      font-weight:500;
+    }
     input[type=number]{
-      width:100%;padding:10px 12px;border-radius:8px;border:1px solid #e6e9ef;font-size:15px;
-      box-sizing:border-box;color:var(--text)
+      width:100%;
+      padding:14px;
+      border-radius:var(--radius);
+      border:1px solid var(--input-border);
+      background:var(--input-bg);
+      font-size:15px;
+      box-sizing:border-box;
+      color:var(--text);
+      transition:var(--transition);
+      font-family:inherit;
+    }
+    input[type=number]:focus{
+      outline:none;
+      border-color:var(--accent);
+      box-shadow:0 0 0 3px rgba(255,192,67,0.15);
+    }
+    input[type=number]:hover{
+      border-color:var(--accent);
     }
     .full{grid-column:1/-1}
-    .actions{display:flex;gap:12px;margin-top:14px;align-items:center}
-    button{background:var(--accent);color:white;border:none;padding:10px 14px;border-radius:8px;font-weight:600;cursor:pointer}
-    button:disabled{opacity:0.6;cursor:not-allowed}
-    .result{
-      margin-top:18px;padding:16px;border-radius:8px;background:#f3f7ff;border:1px solid #e6efff;color:var(--text);
+    .actions{
+      display:flex;
+      gap:12px;
+      margin-top:24px;
+      align-items:center;
+      flex-wrap:wrap;
     }
-    .result h2{margin:0 0 6px;font-size:16px}
-    .muted{color:var(--muted);font-size:13px}
-    .error{color:var(--danger);font-size:13px;margin-top:8px}
+    button{
+      background:var(--accent);
+      color:var(--bg);
+      border:none;
+      padding:14px 24px;
+      border-radius:var(--radius);
+      font-weight:600;
+      cursor:pointer;
+      font-size:15px;
+      transition:var(--transition);
+    }
+    button.secondary{
+      background:var(--input-bg);
+      color:var(--muted);
+    }
+    button:hover{
+      background:var(--accent-hover);
+      transform:translateY(-1px);
+    }
+    button.secondary:hover{
+      background:var(--input-border);
+      color:var(--text);
+    }
+    button:active{transform:translateY(1px)}
+    button:disabled{opacity:0.6;cursor:not-allowed}
+    .result-card{
+      background:var(--card);
+      padding:0;
+      overflow:hidden;
+      opacity:0;
+      transform:translateY(10px);
+      transition:var(--transition);
+    }
+    .result-card.visible{
+      opacity:1;
+      transform:translateY(0);
+    }
+    .result{
+      padding:32px;
+      color:var(--text);
+    }
+    .result.sustainable{background:linear-gradient(135deg, rgba(74,222,128,0.1) 0%, rgba(74,222,128,0.05) 100%)}
+    .result.tight{background:linear-gradient(135deg, rgba(251,191,36,0.1) 0%, rgba(251,191,36,0.05) 100%)}
+    .result.unsustainable{background:linear-gradient(135deg, rgba(248,113,113,0.1) 0%, rgba(248,113,113,0.05) 100%)}
+    
+    .result h2{
+      margin:0 0 16px;
+      font-size:20px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .result h2 .status{
+      width:8px;
+      height:8px;
+      border-radius:50%;
+      display:inline-block;
+    }
+    .sustainable .status{background:var(--success)}
+    .tight .status{background:var(--warning)}
+    .unsustainable .status{background:var(--danger)}
+    
+    .metrics{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+      gap:24px;
+      margin-top:24px;
+    }
+    .metric{
+      padding:16px;
+      background:var(--input-bg);
+      border-radius:var(--radius);
+    }
+    .metric-label{
+      color:var(--muted);
+      font-size:14px;
+      margin-bottom:4px;
+    }
+    .metric-value{
+      font-size:18px;
+      font-weight:500;
+    }
+    
+    .muted{color:var(--muted);font-size:14px}
+    .error{
+      color:var(--danger);
+      font-size:14px;
+      margin-top:12px;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .error:before{
+      content:'⚠️';
+    }
+    
     @media (max-width:640px){
-      .card{padding:18px}
+      body{padding:16px}
+      .card{padding:24px}
       form .grid{grid-template-columns:1fr}
+      input[type=number]{font-size:16px;padding:14px} /* Prevent zoom on iOS */
+      button{width:100%;padding:16px;font-size:16px}
+      .actions{flex-direction:column}
+      .muted{text-align:center;width:100%}
+      .result{padding:24px}
+      .result h2{font-size:18px}
+      .metrics{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
-  <main class="card" role="main">
-    <h1>Bar Break-Even Calculator</h1>
-    <p class="lead">Estimate how many drinks you need to sell per day to cover rent and labor costs.</p>
+  <div class="container">
+    <main class="card" role="main">
+      <h1>Bar Break-Even Calculator</h1>
+      <p class="lead">Calculate your daily drink sales target to cover fixed costs and stay profitable.</p>
 
-    <form id="calcForm" novalidate>
-      <div class="grid">
-        <div>
-          <label for="rent">Monthly Rent ($)</label>
-          <input id="rent" name="rent" type="number" min="0" step="0.01" placeholder="e.g. 4000" required>
+      <form id="calcForm" novalidate>
+        <div class="grid">
+          <div>
+            <label for="rent"><span class="field-icon">🏢</span> Monthly Rent ($)</label>
+            <input id="rent" name="rent" type="number" min="0" step="0.01" placeholder="e.g. 4000" required
+                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off">
+          </div>
+
+          <div>
+            <label for="labor"><span class="field-icon">👥</span> Monthly Labor Costs ($)</label>
+            <input id="labor" name="labor" type="number" min="0" step="0.01" placeholder="e.g. 8000" required
+                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off">
+          </div>
+
+          <div>
+            <label for="other"><span class="field-icon">⚡</span> Other Monthly Expenses ($)</label>
+            <input id="other" name="other" type="number" min="0" step="0.01" placeholder="e.g. 2000" required
+                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off" value="0">
+          </div>
+
+          <div>
+            <label for="cost"><span class="field-icon">🥃</span> Cost to Make One Drink ($)</label>
+            <input id="cost" name="cost" type="number" min="0" step="0.01" placeholder="e.g. 1.20" required
+                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off">
+          </div>
+
+          <div>
+            <label for="price"><span class="field-icon">💵</span> Selling Price Per Drink ($)</label>
+            <input id="price" name="price" type="number" min="0" step="0.01" placeholder="e.g. 6.50" required
+                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off">
+          </div>
+
+          <div>
+            <label for="days"><span class="field-icon">📅</span> Days Open Per Month</label>
+            <input id="days" name="days" type="number" min="1" step="1" value="30" required
+                   inputmode="decimal" pattern="[0-9]*" autocomplete="off">
+          </div>
         </div>
 
-        <div>
-          <label for="labor">Monthly Labor Costs ($)</label>
-          <input id="labor" name="labor" type="number" min="0" step="0.01" placeholder="e.g. 8000" required>
+        <div class="actions">
+          <button id="calculate" type="submit">Calculate Break-Even</button>
+          <button id="reset" type="reset" class="secondary">Reset Form</button>
+          <div class="muted">All fields required. Enter amounts in $.</div>
         </div>
 
-        <div>
-          <label for="cost">Cost to Make One Drink ($)</label>
-          <input id="cost" name="cost" type="number" min="0" step="0.01" placeholder="e.g. 1.20" required>
-        </div>
+        <div id="error" class="error" role="alert" aria-live="polite" style="display:none"></div>
+      </form>
+    </main>
 
-        <div>
-          <label for="price">Selling Price Per Drink ($)</label>
-          <input id="price" name="price" type="number" min="0" step="0.01" placeholder="e.g. 6.50" required>
-        </div>
-
-        <div class="full">
-          <label for="days">Days Open Per Month</label>
-          <input id="days" name="days" type="number" min="1" step="1" value="30" required>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button id="calculate">Calculate</button>
-        <div class="muted">All fields are required. Prices in $.</div>
-      </div>
-
-      <div id="error" class="error" role="alert" aria-live="polite" style="display:none"></div>
-
-      <div id="result" class="result" role="status" aria-live="polite" style="display:none">
-        <h2 id="headline"></h2>
+    <div id="resultCard" class="card result-card" role="status" aria-live="polite" style="display:none">
+      <div id="result" class="result">
+        <h2><span class="status"></span> <span id="headline"></span></h2>
         <div id="details" class="muted"></div>
+        <div class="metrics">
+          <div class="metric">
+            <div class="metric-label">Profit per Drink</div>
+            <div class="metric-value" id="profitPerDrink"></div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Monthly Drinks Needed</div>
+            <div class="metric-value" id="monthlyDrinks"></div>
+          </div>
+          <div class="metric">
+            <div class="metric-label">Monthly Costs</div>
+            <div class="metric-value" id="monthlyCosts"></div>
+          </div>
+        </div>
       </div>
-    </form>
-  </main>
+    </div>
+  </div>
 
   <script>
     (function(){
       const form = document.getElementById('calcForm');
       const rentEl = document.getElementById('rent');
       const laborEl = document.getElementById('labor');
+      const otherEl = document.getElementById('other');
       const costEl = document.getElementById('cost');
       const priceEl = document.getElementById('price');
       const daysEl = document.getElementById('days');
       const errEl = document.getElementById('error');
+      const resultCard = document.getElementById('resultCard');
       const resultEl = document.getElementById('result');
       const headline = document.getElementById('headline');
       const details = document.getElementById('details');
-      const btn = document.getElementById('calculate');
+      const profitPerDrinkEl = document.getElementById('profitPerDrink');
+      const monthlyDrinksEl = document.getElementById('monthlyDrinks');
+      const monthlyCostsEl = document.getElementById('monthlyCosts');
+      const resetBtn = document.getElementById('reset');
 
       function formatMoney(n){
-        return Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
+        return '$' + Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
       }
 
       function showError(message){
         errEl.textContent = message;
         errEl.style.display = 'block';
-        resultEl.style.display = 'none';
+        resultCard.style.display = 'none';
       }
 
       function clearError(){
@@ -133,18 +335,25 @@
         errEl.style.display = 'none';
       }
 
+      function getBreakEvenStatus(drinksPerDay) {
+        if (drinksPerDay <= 100) return 'sustainable';
+        if (drinksPerDay <= 200) return 'tight';
+        return 'unsustainable';
+      }
+
       form.addEventListener('submit', function(e){
         e.preventDefault();
         clearError();
 
-        const rent = parseFloat(rentEl.value);
-        const labor = parseFloat(laborEl.value);
-        const cost = parseFloat(costEl.value);
-        const price = parseFloat(priceEl.value);
-        const days = parseInt(daysEl.value,10);
+        const rent = parseFloat(rentEl.value) || 0;
+        const labor = parseFloat(laborEl.value) || 0;
+        const other = parseFloat(otherEl.value) || 0;
+        const cost = parseFloat(costEl.value) || 0;
+        const price = parseFloat(priceEl.value) || 0;
+        const days = parseInt(daysEl.value,10) || 30;
 
         // Basic validation
-        if (Number.isNaN(rent) || rent < 0 || Number.isNaN(labor) || labor < 0 || Number.isNaN(cost) || cost < 0 || Number.isNaN(price) || price < 0 || Number.isNaN(days) || days < 1) {
+        if (rent < 0 || labor < 0 || other < 0 || cost < 0 || price < 0 || days < 1) {
           showError('Please enter valid non-negative numbers for all fields (days must be at least 1).');
           return;
         }
@@ -154,24 +363,35 @@
           return;
         }
 
-        const profitPerDrink = price - cost; // formula
-        const totalMonthly = rent + labor;
-        const monthlyDrinks = totalMonthly / profitPerDrink; // total monthly drinks needed
+        const profitPerDrink = price - cost;
+        const totalMonthly = rent + labor + other;
+        const monthlyDrinks = totalMonthly / profitPerDrink;
         const drinksPerDay = monthlyDrinks / days;
-
-        // Display results
         const drinksPerDayRounded = Math.ceil(drinksPerDay);
-        headline.textContent = `You need to sell ${drinksPerDayRounded} drink${drinksPerDayRounded === 1 ? '' : 's'} per day to cover rent and labor costs`;
 
-        details.innerHTML = `Profit per drink: $${formatMoney(profitPerDrink)}<br>
-                             Total monthly drinks needed: ${formatMoney(monthlyDrinks)} (${drinksPerDayRounded} /day rounded up)<br>
-                             Days open per month: ${days}<br>
-                             Monthly costs to cover: $${formatMoney(totalMonthly)}`;
+        // Update status and display
+        const status = getBreakEvenStatus(drinksPerDayRounded);
+        resultEl.className = `result ${status}`;
+        
+        headline.textContent = `You need to sell ${drinksPerDayRounded} drink${drinksPerDayRounded === 1 ? '' : 's'} per day`;
+        
+        profitPerDrinkEl.textContent = formatMoney(profitPerDrink);
+        monthlyDrinksEl.textContent = Math.ceil(monthlyDrinks).toLocaleString();
+        monthlyCostsEl.textContent = formatMoney(totalMonthly);
 
-        resultEl.style.display = 'block';
+        resultCard.style.display = 'block';
+        // Trigger reflow for animation
+        resultCard.offsetHeight;
+        resultCard.classList.add('visible');
       });
 
-      // Optional: clear error when user corrects selling/ cost fields
+      resetBtn.addEventListener('click', function() {
+        clearError();
+        resultCard.classList.remove('visible');
+        setTimeout(() => resultCard.style.display = 'none', 200);
+      });
+
+      // Clear error when user corrects selling/cost fields
       [priceEl,costEl].forEach(el => el.addEventListener('input', clearError));
 
     })();
