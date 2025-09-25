@@ -50,13 +50,66 @@ Works in all modern browsers:
 - Safari
 - Edge
 
+## Deployment
+
+### Live Demo
+The calculator is available online at: https://lubakaper.github.io/BarBreakdownColculator/
+
+### GitHub Pages Setup
+This project is hosted using GitHub Pages. To set it up:
+
+1. Go to your repository on GitHub
+2. Click "Settings"
+3. Navigate to "Pages" in the left sidebar
+4. Under "Source", select "Deploy from a branch"
+5. Under "Branch", select "main" and "/ (root)" folder
+6. Click "Save"
+
+Your site will be published at `https://[username].github.io/BarBreakdownColculator/`
+
 ## Local Development
 
-1. Clone this repository
-2. Open `index.html` in your browser
-3. Make changes and refresh to see updates
+For local development, you'll need to use a development server due to browser security restrictions when loading JSON files.
 
-No build process or server required - it's a standalone HTML file.
+### Option 1: Using VS Code (Recommended)
+1. Install the "Live Server" extension in VS Code
+2. Right-click on `index.html` and select "Open with Live Server"
+
+### Option 2: Using Python
+```bash
+python -m http.server 8000
+```
+Then visit: http://localhost:8000
+
+### Option 3: Using Node.js
+Install and run `http-server`:
+```bash
+npm install -g http-server
+http-server
+```
+
+## Project Structure
+
+```
+BarBreakdownColculator/
+├── css/
+│   └── styles.css
+├── js/
+│   ├── calculator.js
+│   ├── neighborhoods.js
+│   └── brooklyn-bar-data.json
+└── index.html
+```
+
+### Data Updates
+Neighborhood comparison data is stored in `js/brooklyn-bar-data.json`. To update:
+1. Edit the JSON file directly
+2. Maintain the existing data structure
+3. Ensure all required fields are present for each neighborhood:
+   - avgCommercialRent
+   - avgDrinkPrice
+   - avgLaborCost
+   - displayName
 
 ## License
 

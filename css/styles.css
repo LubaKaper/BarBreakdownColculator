@@ -2,6 +2,7 @@
   /* Core colors */
   --bg:#1a1e2c;
   --card:#242938;
+  --card-light:#2a3042;
   --text:#e9ecf2;
   --muted:#8791a3;
   --accent:#ffc043;
@@ -42,6 +43,86 @@ body{
   display:grid;
   gap:24px;
   grid-template-columns:1fr;
+}
+
+/* Neighborhood styles */
+.neighborhood-card {
+  background:var(--card-light);
+  padding:28px;
+  border-radius:var(--radius);
+  box-shadow:var(--card-shadow);
+}
+
+.neighborhood-card h2 {
+  font-size:20px;
+  margin:0 0 8px;
+  color:var(--accent);
+}
+
+.neighborhood-card p {
+  color:var(--muted);
+  margin:0 0 20px;
+  font-size:14px;
+}
+
+#neighborhoodSelect {
+  width: 100%;
+  padding: 14px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 20px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='14' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%238791a3' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+#neighborhoodSelect:hover {
+  border-color: var(--accent);
+  background-image: url("data:image/svg+xml,%3Csvg width='14' height='8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23ffc043' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+#neighborhoodSelect:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(255,192,67,0.15);
+}
+
+#neighborhoodSelect option {
+  background: var(--card);
+  color: var(--text);
+  padding: 12px;
+}
+
+#averagesDisplay {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  line-height: 1.5;
+  transition: opacity 0.3s ease;
+  padding: 16px;
+  background: var(--input-bg);
+  border-radius: var(--radius);
+  margin-top: 4px;
+}
+
+#averagesDisplay .loading,
+#averagesDisplay .error {
+  color:var(--muted);
+  font-style:italic;
+}
+
+#averagesDisplay .error {
+  color:var(--danger);
 }
 
 .card{

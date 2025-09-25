@@ -1,0 +1,32 @@
+{
+  "williamsburg": {
+    "avgCommercialRent": 8500,
+    "avgDrinkPrice": 14,
+    "avgLaborCost": 4200,
+    "displayName": "Williamsburg"
+  },
+  "dumbo": {
+    "avgCommercialRent": 11000,
+    "avgDrinkPrice": 16,
+    "avgLaborCost": 4500,
+    "displayName": "DUMBO"
+  },
+  "parkSlope": {
+    "avgCommercialRent": 7200,
+    "avgDrinkPrice": 12,
+    "avgLaborCost": 3800,
+    "displayName": "Park Slope"
+  },
+  "greenpoint": {
+    "avgCommercialRent": 7800,
+    "avgDrinkPrice": 13,
+    "avgLaborCost": 4000,
+    "displayName": "Greenpoint"
+  },
+  "bushwick": {
+    "avgCommercialRent": 6500,
+    "avgDrinkPrice": 11,
+    "avgLaborCost": 3500,
+    "displayName": "Bushwick"
+  }
+}
