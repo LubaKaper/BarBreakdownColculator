@@ -65,18 +65,20 @@ body {
   background: linear-gradient(180deg, var(--bg) 0%, #141722 100%);
   color: var(--text);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: 24px;
+  padding: 16px;
   line-height: 1.5;
+  padding-top: 80px;
 }
 
 .container {
-  max-width:920px;
-  width:100%;
-  display:grid;
-  gap:24px;
-  grid-template-columns:1fr;
+  max-width: 920px;
+  width: 100%;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: 1fr;
+  margin-top: -60px;
 }
 
 /* Neighborhood styles */
@@ -441,10 +443,37 @@ button:active{
   margin-bottom: 16px;
 }
 
+/* Toolbar styles */
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  padding: 16px;
+  z-index: 100;
+  border-bottom: 1px solid var(--input-border);
+}
+
+.toolbar-row {
+  max-width: 920px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 /* Responsive styles */
 @media (max-width:640px){
-  body{
-    padding:16px
+  body {
+    padding: 8px;
+    padding-top: 70px;
+  }
+  .toolbar {
+    padding: 12px;
+  }
+  .container {
+    margin-top: -40px;
   }
   .card{
     padding:24px
