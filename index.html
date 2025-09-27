@@ -8,16 +8,29 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
-  <script src="js/neighborhoods.js" defer></script>
+  <script type="module" src="js/utils/format.js"></script>
+  <script type="module" src="js/utils/state.js"></script>
+  <script type="module" src="js/utils/ui.js"></script>
+  <script type="module" src="js/calculator-core.js"></script>
+  <script type="module" src="js/neighborhoods.js"></script>
+  <script type="module" src="js/calculator.js"></script>
 </head>
 <body>
+  <header class="toolbar">
+    <div class="toolbar-row">
+      <h1>Bar Break-Even Calculator</h1>
+      <div class="neighborhood-select">
+        <select id="neighborhoodSelect" aria-label="Select a Brooklyn neighborhood to see average bar costs">
+          <option value="" disabled selected>Select a neighborhood...</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
   <div class="container">
     <section class="neighborhood-card" role="complementary">
-      <h2>Brooklyn Neighborhood Averages</h2>
+      <h2>Brooklyn Averages</h2>
       <p>Compare your numbers to local bar averages</p>
-      <select id="neighborhoodSelect" aria-label="Select a Brooklyn neighborhood to see average bar costs">
-        <option value="" disabled selected>Select a neighborhood...</option>
-      </select>
       <div id="averagesDisplay" aria-live="polite"></div>
     </section>
 

@@ -1,3 +1,8 @@
+import { validate, compute } from './calculator-core.js';
+import { saveState, restoreState } from './utils/state.js';
+import { fmtMoney, fmtInt } from './utils/format.js';
+import { countUp, revealValues } from './utils/ui.js';
+
 document.addEventListener('DOMContentLoaded', function() {
   const form = document.getElementById('calcForm');
   const rentEl = document.getElementById('rent');
@@ -16,12 +21,29 @@ document.addEventListener('DOMContentLoaded', function() {
   const monthlyCostsEl = document.getElementById('monthlyCosts');
   const resetBtn = document.getElementById('reset');
 
-  function formatMoney(n) {
-    return '$' + Number(n).toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+  // Restore saved state
+  const savedState = restoreState();
+  if (savedState) {
+    Object.entries(savedState).forEach(([key, value]) => {
+      const el = document.getElementById(key);
+      if (el) el.value = value;
     });
   }
+
+  // Save state on input
+  [rentEl, laborEl, otherEl, costEl, priceEl, daysEl].forEach(el => {
+    el.addEventListener('input', () => {
+      const state = {
+        rent: rentEl.value,
+        labor: laborEl.value,
+        other: otherEl.value,
+        cost: costEl.value,
+        price: priceEl.value,
+        days: daysEl.value
+      };
+      saveState(state);
+    });
+  });
 
   function showError(message) {
     errEl.textContent = message;
@@ -74,9 +96,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     headline.textContent = `You need to sell ${drinksPerDayRounded} drink${drinksPerDayRounded === 1 ? '' : 's'} per day`;
 
-    profitPerDrinkEl.textContent = formatMoney(profitPerDrink);
-    monthlyDrinksEl.textContent = Math.ceil(monthlyDrinks).toLocaleString();
-    monthlyCostsEl.textContent = formatMoney(totalMonthly);
+    // Animate values with countUp
+    revealValues(['profitPerDrink', 'monthlyCosts', 'monthlyDrinks']);
+    countUp(profitPerDrinkEl, profitPerDrink, fmtMoney);
+    countUp(monthlyDrinksEl, Math.ceil(monthlyDrinks), fmtInt);
+    countUp(monthlyCostsEl, totalMonthly, fmtMoney);
 
     resultCard.style.display = 'block';
     // Trigger reflow for animation
@@ -88,6 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
     clearError();
     resultCard.classList.remove('visible');
     setTimeout(() => resultCard.style.display = 'none', 200);
+    localStorage.removeItem('barCalculator');
   });
 
   // Clear error when user corrects selling/cost fields

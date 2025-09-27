@@ -1,4 +1,6 @@
 // Neighborhood data handling and display
+import { saveState, restoreState } from './utils/state.js';
+
 document.addEventListener('DOMContentLoaded', async function() {
     const neighborhoodSelect = document.getElementById('neighborhoodSelect');
     const averagesDisplay = document.getElementById('averagesDisplay');
@@ -62,7 +64,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }            // Validate the data
             validateNeighborhoodData(data);
             
-            // Sort neighborhoods alphabetically and prepare for dropdown
+                        // Sort neighborhoods alphabetically and prepare for dropdown
             const neighborhoods = Object.entries(data)
                 .map(([key, value]) => ({key, ...value}))
                 .filter(hood => hood.displayName && typeof hood.displayName === 'string')
@@ -171,6 +173,25 @@ document.addEventListener('DOMContentLoaded', async function() {
                     averagesDisplay.innerHTML = '<div class="error">Neighborhood data not found</div>';
                     return;
                 }
+                
+                // Update form with neighborhood data
+                const rentInput = document.getElementById('rent');
+                const laborInput = document.getElementById('labor');
+                const priceInput = document.getElementById('price');
+                
+                if (rentInput) rentInput.value = neighborhoodInfo.avgCommercialRent;
+                if (laborInput) laborInput.value = neighborhoodInfo.avgLaborCost;
+                if (priceInput) priceInput.value = neighborhoodInfo.avgDrinkPrice;
+                
+                // Save state with new values
+                const state = restoreState() || {};
+                saveState({
+                    ...state,
+                    neighborhood: selectedNeighborhood,
+                    rent: neighborhoodInfo.avgCommercialRent,
+                    labor: neighborhoodInfo.avgLaborCost,
+                    price: neighborhoodInfo.avgDrinkPrice
+                });
                 
                 displayNeighborhoodAverages(neighborhoodInfo);
             });

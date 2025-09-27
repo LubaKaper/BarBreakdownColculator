@@ -1,3 +1,15 @@
+@keyframes drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(-5px, -5px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes softPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
 :root{
   /* Core colors */
   --bg:#1a1e2c;
@@ -24,7 +36,8 @@
 html,body{
   height:100%;
   margin:0;
-  background:var(--bg)
+  background:var(--bg);
+  overscroll-behavior-y: none;
 }
 
 body{

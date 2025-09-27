@@ -1,0 +1,72 @@
+/* Add after existing CSS */
+
+.toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    padding-top: env(safe-area-inset-top, 0);
+    backdrop-filter: saturate(160%) blur(10px);
+    -webkit-backdrop-filter: saturate(160%) blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: rgba(26,30,44,0.8);
+    margin: -24px -24px 0;
+    padding: 24px;
+}
+
+.toolbar-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    align-items: center;
+    max-width: 920px;
+    margin: 0 auto;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, var(--accent) 0%, var(--accent-hover) 100%);
+    opacity: 0.03;
+    z-index: -1;
+    animation: drift 20s ease-in-out infinite;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.result .value {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+}
+
+.result .value.reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.results.calculated {
+    animation: softPulse 0.5s ease-out;
+}
+
+@media (max-width: 520px) {
+    .toolbar-row {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+    body::before {
+        display: none;
+    }
+}
