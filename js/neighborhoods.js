@@ -22,12 +22,17 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         // Check if we have at least one valid neighborhood
         const hasValidNeighborhood = Object.values(data).some(hood => {
+            // Convert values to numbers for validation
+            const rent = Number(hood.avgCommercialRent);
+            const price = Number(hood.avgDrinkPrice);
+            const labor = Number(hood.avgLaborCost);
+            
             return hood &&
                 typeof hood === 'object' &&
                 typeof hood.displayName === 'string' &&
-                typeof hood.avgCommercialRent === 'number' &&
-                typeof hood.avgDrinkPrice === 'number' &&
-                typeof hood.avgLaborCost === 'number';
+                !isNaN(rent) && rent > 0 &&
+                !isNaN(price) && price > 0 &&
+                !isNaN(labor) && labor > 0;
         });
 
         if (!hasValidNeighborhood) {
@@ -113,14 +118,16 @@ document.addEventListener('DOMContentLoaded', async function() {
             return;
         }
 
+        // Parse and validate neighborhood data
+        const rent = Number(neighborhood.avgCommercialRent);
+        const price = Number(neighborhood.avgDrinkPrice);
+        const labor = Number(neighborhood.avgLaborCost);
+        
         // Validate neighborhood data
         const isValid = (
-            neighborhood.avgCommercialRent &&
-            neighborhood.avgDrinkPrice &&
-            neighborhood.avgLaborCost &&
-            !isNaN(neighborhood.avgCommercialRent) &&
-            !isNaN(neighborhood.avgDrinkPrice) &&
-            !isNaN(neighborhood.avgLaborCost)
+            !isNaN(rent) && rent > 0 &&
+            !isNaN(price) && price > 0 &&
+            !isNaN(labor) && labor > 0
         );
 
         if (!isValid) {
@@ -179,18 +186,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                 const laborInput = document.getElementById('labor');
                 const priceInput = document.getElementById('price');
                 
-                if (rentInput) rentInput.value = neighborhoodInfo.avgCommercialRent;
-                if (laborInput) laborInput.value = neighborhoodInfo.avgLaborCost;
-                if (priceInput) priceInput.value = neighborhoodInfo.avgDrinkPrice;
+                // Parse values as numbers and set them to form inputs
+                if (rentInput) rentInput.value = Number(neighborhoodInfo.avgCommercialRent).toString();
+                if (laborInput) laborInput.value = Number(neighborhoodInfo.avgLaborCost).toString();
+                if (priceInput) priceInput.value = Number(neighborhoodInfo.avgDrinkPrice).toString();
                 
-                // Save state with new values
+                // Save state with new values, ensuring numbers are stored
                 const state = restoreState() || {};
                 saveState({
                     ...state,
                     neighborhood: selectedNeighborhood,
-                    rent: neighborhoodInfo.avgCommercialRent,
-                    labor: neighborhoodInfo.avgLaborCost,
-                    price: neighborhoodInfo.avgDrinkPrice
+                    rent: Number(neighborhoodInfo.avgCommercialRent),
+                    labor: Number(neighborhoodInfo.avgLaborCost),
+                    price: Number(neighborhoodInfo.avgDrinkPrice)
                 });
                 
                 displayNeighborhoodAverages(neighborhoodInfo);
