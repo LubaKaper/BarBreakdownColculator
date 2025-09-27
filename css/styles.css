@@ -10,6 +10,11 @@
   100% { transform: scale(1); }
 }
 
+@keyframes reveal {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
 :root{
   /* Core colors */
   --bg:#1a1e2c;
@@ -263,6 +268,7 @@ button:active{
 .result-card.visible{
   opacity:1;
   transform:translateY(0);
+  animation: softPulse 0.5s ease-out;
 }
 
 .result{
@@ -331,6 +337,15 @@ button:active{
 .metric-value{
   font-size:18px;
   font-weight:500;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.metric-value.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  animation: reveal 0.5s ease forwards;
 }
 
 .muted{
@@ -385,5 +400,37 @@ button:active{
   }
   .metrics{
     grid-template-columns:1fr
+  }
+}
+
+@keyframes reveal {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.metric-value {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.metric-value.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  animation: reveal 0.5s ease forwards;
+}
+
+/* Add to the result-card.visible class */
+.result-card.visible {
+  animation: softPulse 0.5s ease-out;
+}
+
+/* Add reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .metric-value,
+  .result-card,
+  * {
+    animation: none !important;
+    transition: none !important;
   }
 }

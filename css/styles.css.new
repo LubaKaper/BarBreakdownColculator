@@ -1,0 +1,31 @@
+@keyframes reveal {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.metric-value {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.metric-value.reveal {
+  opacity: 1;
+  transform: translateY(0);
+  animation: reveal 0.5s ease forwards;
+}
+
+/* Add to the result-card.visible class */
+.result-card.visible {
+  animation: softPulse 0.5s ease-out;
+}
+
+/* Add reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .metric-value,
+  .result-card,
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

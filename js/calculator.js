@@ -96,8 +96,32 @@ document.addEventListener('DOMContentLoaded', function() {
 
     headline.textContent = `You need to sell ${drinksPerDayRounded} drink${drinksPerDayRounded === 1 ? '' : 's'} per day`;
 
-    // Animate values with countUp
-    revealValues(['profitPerDrink', 'monthlyCosts', 'monthlyDrinks']);
+    // Show the result card with animation
+    resultCard.style.display = 'block';
+    resultCard.classList.add('visible');
+
+    // Add metric-value class to elements if not already present
+    [profitPerDrinkEl, monthlyCostsEl, monthlyDrinksEl].forEach(el => {
+      if (!el.classList.contains('metric-value')) {
+        el.classList.add('metric-value');
+      }
+    });
+
+    // Reset animations by removing reveal class
+    [profitPerDrinkEl, monthlyCostsEl, monthlyDrinksEl].forEach(el => {
+      el.classList.remove('reveal');
+    });
+
+    // Trigger reveal animations in sequence
+    setTimeout(() => {
+      profitPerDrinkEl.classList.add('reveal');
+      setTimeout(() => {
+        monthlyCostsEl.classList.add('reveal');
+        setTimeout(() => {
+          monthlyDrinksEl.classList.add('reveal');
+        }, 100);
+      }, 100);
+    }, 100);
     countUp(profitPerDrinkEl, profitPerDrink, fmtMoney);
     countUp(monthlyDrinksEl, Math.ceil(monthlyDrinks), fmtInt);
     countUp(monthlyCostsEl, totalMonthly, fmtMoney);
