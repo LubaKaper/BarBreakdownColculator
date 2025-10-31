@@ -4,6 +4,27 @@ import { saveState, restoreState } from './utils/state.js';
 document.addEventListener('DOMContentLoaded', async function() {
     const neighborhoodSelect = document.getElementById('neighborhoodSelect');
     const averagesDisplay = document.getElementById('averagesDisplay');
+    
+    // FORCE KILL ALL ANIMATIONS ON SELECT ELEMENT
+    if (neighborhoodSelect) {
+        neighborhoodSelect.style.transition = 'none';
+        neighborhoodSelect.style.transform = 'none';
+        neighborhoodSelect.style.animation = 'none';
+        neighborhoodSelect.style.webkitTransition = 'none';
+        
+        // Also kill on hover
+        neighborhoodSelect.addEventListener('mouseenter', () => {
+            neighborhoodSelect.style.transition = 'none';
+            neighborhoodSelect.style.transform = 'none';
+            neighborhoodSelect.style.animation = 'none';
+        });
+        
+        neighborhoodSelect.addEventListener('mouseleave', () => {
+            neighborhoodSelect.style.transition = 'none';
+            neighborhoodSelect.style.transform = 'none';
+            neighborhoodSelect.style.animation = 'none';
+        });
+    }
 
     // Format currency with commas and $ sign
     const formatCurrency = (amount) => {
@@ -136,17 +157,17 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
 
         const formattedData = `
-            <div class="metric">
-                <div class="metric-label">Monthly Rent</div>
-                <div class="metric-value">${formatCurrency(neighborhood.avgCommercialRent)}</div>
+            <div style="padding: 16px; background: #2a3042; border-radius: 8px; border: 1px solid #3f4a5e; margin-bottom: 12px;">
+                <div style="color: #8791a3; font-size: 14px; margin-bottom: 4px;">Monthly Rent</div>
+                <div style="color: #e9ecf2; font-size: 18px; font-weight: 600;">${formatCurrency(neighborhood.avgCommercialRent)}</div>
             </div>
-            <div class="metric">
-                <div class="metric-label">Average Drink Price</div>
-                <div class="metric-value">${formatCurrency(neighborhood.avgDrinkPrice)}</div>
+            <div style="padding: 16px; background: #2a3042; border-radius: 8px; border: 1px solid #3f4a5e; margin-bottom: 12px;">
+                <div style="color: #8791a3; font-size: 14px; margin-bottom: 4px;">Average Drink Price</div>
+                <div style="color: #e9ecf2; font-size: 18px; font-weight: 600;">${formatCurrency(neighborhood.avgDrinkPrice)}</div>
             </div>
-            <div class="metric">
-                <div class="metric-label">Monthly Labor Cost</div>
-                <div class="metric-value">${formatCurrency(neighborhood.avgLaborCost)}</div>
+            <div style="padding: 16px; background: #2a3042; border-radius: 8px; border: 1px solid #3f4a5e; margin-bottom: 12px;">
+                <div style="color: #8791a3; font-size: 14px; margin-bottom: 4px;">Monthly Labor Cost</div>
+                <div style="color: #e9ecf2; font-size: 18px; font-weight: 600;">${formatCurrency(neighborhood.avgLaborCost)}</div>
             </div>
         `;
         

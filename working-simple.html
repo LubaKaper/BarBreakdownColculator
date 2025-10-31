@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Bar Break-Even Calculator | Daily Drinks Needed</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <header class="toolbar">
+        <div class="toolbar-row">
+            <h1>Bar Break-Even Calculator</h1>
+            <div class="neighborhood-select">
+                <label for="neighborhoodSelect" class="neighborhood-label">📍 Compare with Brooklyn Averages</label>
+                <select id="neighborhoodSelect" style="transition: none !important;">
+                    <option value="" disabled selected>Select a neighborhood...</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="calculator-section">
+            <div class="input-section">
+                <h2>Monthly Expenses</h2>
+                <div class="expense-inputs">
+                    <div class="input-group">
+                        <label for="rent">Monthly Rent ($)</label>
+                        <input type="number" id="rent" placeholder="e.g. 8000" min="0" step="100" />
+                    </div>
+                    <div class="input-group">
+                        <label for="labor">Monthly Labor Cost ($)</label>
+                        <input type="number" id="labor" placeholder="e.g. 15000" min="0" step="100" />
+                    </div>
+                    <div class="input-group">
+                        <label for="other">Other Monthly Expenses ($)</label>
+                        <input type="number" id="other" placeholder="e.g. 5000" min="0" step="100" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="pricing-section">
+                <h2>Drink Pricing</h2>
+                <div class="pricing-inputs">
+                    <div class="input-group">
+                        <label for="price">Average Drink Price ($)</label>
+                        <input type="number" id="price" placeholder="e.g. 15" min="0" step="0.50" />
+                    </div>
+                    <div class="input-group">
+                        <label for="cost">Cost per Drink ($)</label>
+                        <input type="number" id="cost" placeholder="e.g. 3" min="0" step="0.10" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="averages-section">
+                <h2>Brooklyn Averages</h2>
+                <div id="averagesDisplay" style="min-height: 100px; border: 1px solid #ccc; padding: 16px;">
+                    Select a neighborhood above to see average costs
+                </div>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="results-card">
+                <h2>Break-Even Analysis</h2>
+                <div class="result-item">
+                    <span class="result-label">Daily drinks needed:</span>
+                    <span class="result-value" id="dailyResult">—</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Monthly drinks needed:</span>
+                    <span class="result-value" id="monthlyResult">—</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        console.log('Simple script loading...');
+        
+        // Simple neighborhood data loading
+        async function loadNeighborhoods() {
+            try {
+                const response = await fetch('./js/brooklyn-bar-data.json');
+                const data = await response.json();
+                
+                const select = document.getElementById('neighborhoodSelect');
+                const display = document.getElementById('averagesDisplay');
+                
+                // Add neighborhoods to dropdown
+                Object.entries(data).forEach(([key, neighborhood]) => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = neighborhood.displayName;
+                    select.appendChild(option);
+                });
+                
+                // Handle selection
+                select.addEventListener('change', (e) => {
+                    const selected = e.target.value;
+                    if (!selected) return;
+                    
+                    const info = data[selected];
+                    const rentInput = document.getElementById('rent');
+                    const laborInput = document.getElementById('labor');
+                    const priceInput = document.getElementById('price');
+                    
+                    // Update form
+                    if (rentInput) rentInput.value = info.avgCommercialRent;
+                    if (laborInput) laborInput.value = info.avgLaborCost;
+                    if (priceInput) priceInput.value = info.avgDrinkPrice;
+                    
+                    // Display data
+                    display.innerHTML = `
+                        <div style="background: white; border: 2px solid #007acc; padding: 12px; margin: 8px 0;">
+                            <div style="color: #333; font-size: 14px; font-weight: bold;">Monthly Rent</div>
+                            <div style="color: #007acc; font-size: 18px; font-weight: bold;">$${info.avgCommercialRent.toLocaleString()}</div>
+                        </div>
+                        <div style="background: white; border: 2px solid #007acc; padding: 12px; margin: 8px 0;">
+                            <div style="color: #333; font-size: 14px; font-weight: bold;">Average Drink Price</div>
+                            <div style="color: #007acc; font-size: 18px; font-weight: bold;">$${info.avgDrinkPrice.toLocaleString()}</div>
+                        </div>
+                        <div style="background: white; border: 2px solid #007acc; padding: 12px; margin: 8px 0;">
+                            <div style="color: #333; font-size: 14px; font-weight: bold;">Monthly Labor Cost</div>
+                            <div style="color: #007acc; font-size: 18px; font-weight: bold;">$${info.avgLaborCost.toLocaleString()}</div>
+                        </div>
+                    `;
+                });
+                
+                console.log('Neighborhoods loaded successfully:', Object.keys(data).length);
+                
+            } catch (error) {
+                console.error('Failed to load neighborhoods:', error);
+                document.getElementById('averagesDisplay').innerHTML = '<div style="color: red;">Failed to load neighborhood data</div>';
+            }
+        }
+        
+        // Load when page is ready
+        document.addEventListener('DOMContentLoaded', loadNeighborhoods);
+        
+        console.log('Script setup complete');
+    </script>
+</body>
+</html>
