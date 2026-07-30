@@ -10,6 +10,10 @@
   <a href="https://lubakaper.github.io/BarBreakdownColculator/"><strong>Open the app →</strong></a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/LubaKaper/BarBreakdownColculator/actions/workflows/test.yml"><img src="https://github.com/LubaKaper/BarBreakdownColculator/actions/workflows/test.yml/badge.svg" alt="Test status"></a>
+</p>
+
 <img src="readme-assets/divider.svg" alt="" width="100%">
 
 ## The pitch
