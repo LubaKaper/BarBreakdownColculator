@@ -8,14 +8,17 @@ trust, portability, and one killer addition — not feature count.
 
 ## Phase 1 — Make it feel like an app
 
-- [ ] **PWA**: manifest, icons, service worker. Installable on a phone home
+- [x] **PWA**: manifest, icons, service worker. Installable on a phone home
       screen, opens fullscreen, works offline.
-- [ ] **Shareable links**: encode inputs in the URL query string so an owner
+- [x] **Shareable links**: encode inputs in the URL query string so an owner
       can text their scenario to a partner. No backend.
-- [ ] **Profit target mode**: optional "monthly profit goal" field. Turns
+- [x] **Profit target mode**: optional "monthly profit goal" field. Turns
       "37 drinks/day to survive" into "52 drinks/day to pay yourself $5k."
-- [ ] **Honest data labeling**: mark Brooklyn averages as estimates with a
+- [x] **Honest data labeling**: mark Brooklyn averages as estimates with a
       "last updated" date.
+
+> Deploy note: bump `CACHE_NAME` in `sw.js` whenever a cached file changes,
+> or returning visitors keep the old version.
 
 ## Phase 2 — The killer feature: reality check
 

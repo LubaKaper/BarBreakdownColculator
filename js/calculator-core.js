@@ -1,11 +1,12 @@
 // Pure break-even math. No DOM access — keep it testable.
 
-export const validate = ({ rent, labor, other, cost, price, days }) => {
+export const validate = ({ rent, labor, other, cost, price, days, goal = 0 }) => {
   const errors = [];
 
   if (rent < 0) errors.push("Rent must be non-negative");
   if (labor < 0) errors.push("Labor costs must be non-negative");
   if (other < 0) errors.push("Other expenses must be non-negative");
+  if (goal < 0) errors.push("Profit goal must be non-negative");
   if (cost < 0) errors.push("Cost per drink must be non-negative");
   if (price <= 0) errors.push("Selling price must be greater than zero");
   if (price <= cost) errors.push("Selling price must be higher than cost");
@@ -15,11 +16,15 @@ export const validate = ({ rent, labor, other, cost, price, days }) => {
   return errors;
 };
 
-export const compute = ({ rent, labor, other, cost, price, days }) => {
+// With a profit goal set, the headline targets cover costs + goal;
+// breakEvenDaily is always the costs-only number.
+export const compute = ({ rent, labor, other, cost, price, days, goal = 0 }) => {
   const profitPerDrink = price - cost;
   const monthlyCosts = rent + labor + other;
-  const monthlyDrinksNeeded = monthlyCosts / profitPerDrink;
+  const monthlyTarget = monthlyCosts + goal;
+  const monthlyDrinksNeeded = monthlyTarget / profitPerDrink;
   const dailyDrinksTarget = monthlyDrinksNeeded / days;
+  const breakEvenDaily = monthlyCosts / profitPerDrink / days;
   const weeklyDrinksTarget = dailyDrinksTarget * 7;
   const weeklyRevenueTarget = weeklyDrinksTarget * price;
   const marginPct = (profitPerDrink / price) * 100;
@@ -29,6 +34,7 @@ export const compute = ({ rent, labor, other, cost, price, days }) => {
     monthlyCosts,
     monthlyDrinksNeeded,
     dailyDrinksTarget,
+    breakEvenDaily,
     weeklyDrinksTarget,
     weeklyRevenueTarget,
     marginPct

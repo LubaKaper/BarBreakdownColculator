@@ -14,13 +14,15 @@ document.addEventListener("DOMContentLoaded", () => {
     other: $("other"),
     cost: $("cost"),
     price: $("price"),
-    days: $("days")
+    days: $("days"),
+    goal: $("goal")
   };
 
   const hero = {
     value: $("heroValue"),
     unit: $("heroUnit"),
     status: $("statusPill"),
+    note: $("heroNote"),
     weeklyDrinks: $("weeklyDrinks"),
     weeklyRevenue: $("weeklyRevenue")
   };
@@ -46,12 +48,41 @@ document.addEventListener("DOMContentLoaded", () => {
     other: parseFloat(fields.other.value) || 0,
     cost: parseFloat(fields.cost.value) || 0,
     price: parseFloat(fields.price.value) || 0,
-    days: parseInt(fields.days.value, 10) || 0
+    days: parseInt(fields.days.value, 10) || 0,
+    goal: parseFloat(fields.goal.value) || 0
   });
 
   // Don't validate/render until the pricing fields are filled in —
   // avoids showing errors on a fresh, untouched form.
   const formReady = () => fields.price.value !== "" && fields.cost.value !== "";
+
+  // ---- shareable URLs ------------------------------------------------------
+
+  const URL_KEYS = ["rent", "labor", "other", "cost", "price", "days", "goal"];
+
+  // Mirror the form into the query string so the current scenario is a link.
+  const updateURL = () => {
+    const params = new URLSearchParams();
+    URL_KEYS.forEach((k) => {
+      if (fields[k].value !== "") params.set(k, fields[k].value);
+    });
+    if (hoodSelect.value) params.set("hood", hoodSelect.value);
+    const qs = params.toString();
+    history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
+  };
+
+  // Returns true if the URL carried a scenario (takes precedence over storage).
+  const applyURLParams = () => {
+    const params = new URLSearchParams(location.search);
+    const hasAny = URL_KEYS.some((k) => params.has(k)) || params.has("hood");
+    if (!hasAny) return false;
+    URL_KEYS.forEach((k) => {
+      if (params.has(k)) fields[k].value = params.get(k);
+    });
+    const hood = params.get("hood");
+    if (hood && NEIGHBORHOODS[hood]) hoodSelect.value = hood;
+    return true;
+  };
 
   const persist = () => {
     saveState({
@@ -61,8 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
       cost: fields.cost.value,
       price: fields.price.value,
       days: fields.days.value,
+      goal: fields.goal.value,
       neighborhood: hoodSelect.value || ""
     });
+    updateURL();
   };
 
   const showError = (messages) => {
@@ -80,6 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const clearResults = () => {
     hero.value.textContent = "—";
     hero.status.hidden = true;
+    hero.note.hidden = true;
     hero.weeklyDrinks.textContent = "—";
     hero.weeklyRevenue.textContent = "—";
     Object.values(metrics).forEach((el) => (el.textContent = "—"));
@@ -138,6 +172,13 @@ document.addEventListener("DOMContentLoaded", () => {
     hero.status.className = `status-pill ${status}`;
     hero.status.textContent = STATUS_LABELS[status];
     hero.value.className = `hero-value ${status}`;
+
+    if (inputs.goal > 0) {
+      hero.note.hidden = false;
+      hero.note.textContent = `Includes your ${fmtMoney(inputs.goal)}/mo profit goal — break-even alone is ${fmtInt(Math.ceil(r.breakEvenDaily))} drinks/day`;
+    } else {
+      hero.note.hidden = true;
+    }
 
     const weekly = Math.ceil(r.weeklyDrinksTarget);
     if (animate) {
@@ -224,10 +265,33 @@ document.addEventListener("DOMContentLoaded", () => {
     render({ animate: true });
   });
 
+  $("share").addEventListener("click", async () => {
+    updateURL();
+    const url = location.href;
+    const label = $("shareLabel");
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "PRISM CALC — my bar numbers", url });
+        return;
+      } catch (e) {
+        if (e.name === "AbortError") return; // user closed the share sheet
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(url);
+      label.textContent = "Link copied";
+      setTimeout(() => (label.textContent = "Share"), 2000);
+    } catch (e) {
+      label.textContent = "Copy failed";
+      setTimeout(() => (label.textContent = "Share"), 2000);
+    }
+  });
+
   $("reset").addEventListener("click", () => {
     localStorage.removeItem("barCalculator");
     hoodSelect.value = "";
     renderNeighborhoodCard(null);
+    history.replaceState(null, "", location.pathname);
     // Let the native reset clear inputs first, then redraw.
     requestAnimationFrame(() => {
       fields.days.value = 30;
@@ -238,22 +302,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ---- init ----------------------------------------------------------------
 
-  const saved = restoreState();
-  if (saved) {
-    Object.keys(fields).forEach((k) => {
-      if (saved[k] !== undefined && saved[k] !== null && saved[k] !== "") {
-        fields[k].value = saved[k];
+  // A scenario in the URL (shared link) wins over saved state.
+  if (applyURLParams()) {
+    renderNeighborhoodCard(hoodSelect.value || null);
+    persist();
+  } else {
+    const saved = restoreState();
+    if (saved) {
+      Object.keys(fields).forEach((k) => {
+        if (saved[k] !== undefined && saved[k] !== null && saved[k] !== "") {
+          fields[k].value = saved[k];
+        }
+      });
+      if (saved.neighborhood && NEIGHBORHOODS[saved.neighborhood]) {
+        hoodSelect.value = saved.neighborhood;
+        renderNeighborhoodCard(saved.neighborhood);
+      } else {
+        renderNeighborhoodCard(null);
       }
-    });
-    if (saved.neighborhood && NEIGHBORHOODS[saved.neighborhood]) {
-      hoodSelect.value = saved.neighborhood;
-      renderNeighborhoodCard(saved.neighborhood);
     } else {
       renderNeighborhoodCard(null);
     }
-  } else {
-    renderNeighborhoodCard(null);
   }
 
   render();
+
+  // Offline support / installability.
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  }
 });

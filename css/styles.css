@@ -213,6 +213,14 @@ body {
 .status-pill.tight         { color: var(--amber); background: rgba(255, 210, 122, 0.12); border: 1px solid rgba(255, 210, 122, 0.4); }
 .status-pill.unsustainable { color: var(--pink);  background: rgba(247, 81, 161, 0.12);  border: 1px solid rgba(247, 81, 161, 0.4); }
 
+.hero-note {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--on-surface-variant);
+  opacity: 0.85;
+}
+.hero-note[hidden] { display: none; }
+
 .hero-chips { display: flex; gap: 16px; }
 
 .chip {
@@ -359,6 +367,13 @@ select:focus { border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(76, 215, 24
   color: var(--on-surface-variant);
 }
 .panel .field-label:first-of-type { margin-top: 0; }
+
+.label-hint {
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+  opacity: 0.6;
+}
 
 .input-wrap { position: relative; }
 .input-wrap .prefix {
@@ -558,6 +573,13 @@ input::placeholder { color: var(--outline); opacity: 0.5; font-weight: 400; }
   transition: border-color 0.15s ease, color 0.15s ease;
 }
 .btn-ghost:hover { border-color: var(--pink); color: var(--pink-soft); }
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-icon:hover { border-color: var(--cyan); color: var(--cyan); }
 
 /* ---- footer ------------------------------------------------------------- */
 

@@ -4,6 +4,9 @@ A mobile-friendly web app that tells bar owners how many drinks they need to sel
 
 ## Features
 
+- **Installable app (PWA)** — add to a phone home screen, opens fullscreen, works offline
+- **Shareable links** — inputs live in the URL; the Share button copies a link that opens pre-filled
+- **Profit goal mode** — optional monthly profit target; the headline shows drinks/day to hit it, with break-even noted alongside
 - **Live break-even analysis** — results update as you type; no need to press Calculate
 - **Daily drinks target** with sustainability status (Sustainable ≤ 100/day, Tight ≤ 200/day, Unsustainable above)
 - **Weekly targets** — drinks per week and weekly revenue needed
@@ -49,6 +52,9 @@ Then visit http://localhost:8000
 ```
 BarBreakdownColculator/
 ├── index.html                     # Page structure
+├── manifest.webmanifest           # PWA manifest
+├── sw.js                          # Service worker (offline cache; bump CACHE_NAME on deploy)
+├── icons/                         # App icons (512/192/apple-touch)
 ├── css/
 │   └── styles.css                 # PRISM theme (dark neon glassmorphism)
 └── js/
