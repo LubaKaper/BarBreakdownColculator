@@ -1,6 +1,6 @@
 // Service worker: precache the app shell so PRISM CALC works offline.
 // Bump CACHE_NAME on every deploy that changes any cached file.
-const CACHE_NAME = "prism-calc-v1";
+const CACHE_NAME = "prism-calc-v2";
 
 const ASSETS = [
   "./",

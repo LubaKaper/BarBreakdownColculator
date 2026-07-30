@@ -5,7 +5,29 @@ import { saveState, restoreState } from "./utils/state.js";
 import { fmtMoney, fmtInt } from "./utils/format.js";
 import { countUp } from "./utils/ui.js";
 
+// Light/dark toggle: persisted choice wins; otherwise system preference.
+// The actual initial theme is set synchronously in index.html to avoid a flash.
+const THEME_COLORS = { dark: "#0b1326", light: "#f5f4fb" };
+
+const initThemeToggle = () => {
+  const toggle = document.getElementById("themeToggle");
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (!toggle) return;
+
+  toggle.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme") === "light" ? "light" : "dark";
+    const next = current === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", next);
+    if (metaTheme) metaTheme.setAttribute("content", THEME_COLORS[next]);
+    try {
+      localStorage.setItem("prism-theme", next);
+    } catch (e) {}
+  });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
+  initThemeToggle();
+
   const $ = (id) => document.getElementById(id);
 
   const fields = {
