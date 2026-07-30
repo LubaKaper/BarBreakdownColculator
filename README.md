@@ -77,7 +77,7 @@ A little bar chart shows how the daily target shifts if you bump the menu price 
 <td>
 
 **Weekly rhythm**
-Splits the weekly target across Mon–Sun — Even, Typical, or Weekend-heavy — so "258 drinks a week" becomes "~55 on Saturday, ~26 on a Monday." Pick Custom to set your own per-day weights if the presets don't match your room.
+Splits the weekly target across Mon–Sun — Even, Typical, or Weekend-heavy — so "258 drinks a week" becomes "~55 on Saturday, ~26 on a Monday." Pick Custom and tap each day's level — Quiet, Normal, Busy, Packed — if the presets don't match your room.
 
 </td>
 </tr>

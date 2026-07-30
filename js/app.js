@@ -7,7 +7,10 @@ import {
   priceSensitivity,
   WEEKDAYS,
   RHYTHM_PRESETS,
-  distributeWeekly
+  distributeWeekly,
+  LEVELS,
+  DEFAULT_CUSTOM_LEVELS,
+  levelsToWeights
 } from "./calculator-core.js";
 import { NEIGHBORHOODS, MAX_RENT, sortedNeighborhoods } from "./data/brooklyn-bar-data.js";
 import { saveState, restoreState } from "./utils/state.js";
@@ -75,10 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const rhythmCustomEl = $("rhythmCustom");
   const rhythmChartEl = $("rhythmChart");
   const rhythmChartEmptyEl = $("rhythmChartEmpty");
-  const weightInputs = WEEKDAYS.reduce((acc, day) => {
-    acc[day] = $(`w${day}`);
-    return acc;
-  }, {});
+  const dayLevelGrid = $("dayLevelGrid");
 
   // ---- helpers -------------------------------------------------------------
 
@@ -97,15 +97,84 @@ document.addEventListener("DOMContentLoaded", () => {
   const formReady = () => fields.price.value !== "" && fields.cost.value !== "";
 
   // ---- weekly rhythm ---------------------------------------------------------
+  // Custom rhythm is a tap-able 4-level meter per day (Quiet/Normal/Busy/
+  // Packed) rather than raw numbers — faster to use, especially on a phone.
 
-  const seedCustomWeights = (weights) => {
-    WEEKDAYS.forEach((day, i) => (weightInputs[day].value = weights[i]));
+  let customLevels = null; // array of 7 ints (1-4), Mon..Sun; null = not seeded yet
+
+  const ensureCustomSeeded = () => {
+    if (!customLevels) customLevels = [...DEFAULT_CUSTOM_LEVELS];
   };
 
-  const getCustomWeights = () => WEEKDAYS.map((day) => parseFloat(weightInputs[day].value) || 0);
+  const getCustomLevels = () => {
+    ensureCustomSeeded();
+    return customLevels;
+  };
+
+  const renderDayLevel = (i) => {
+    ensureCustomSeeded();
+    const level = customLevels[i];
+    const col = dayLevelGrid.children[i];
+    if (!col) return;
+    col.querySelectorAll(".day-level-seg").forEach((seg) => {
+      seg.classList.toggle("filled", Number(seg.dataset.level) <= level);
+    });
+    col.querySelector(".day-level-track").dataset.level = level;
+    col.querySelector(".day-level-name").textContent = LEVELS[level].label;
+  };
+
+  const renderAllDayLevels = () => WEEKDAYS.forEach((_, i) => renderDayLevel(i));
+
+  const seedCustomLevels = (levels) => {
+    customLevels = [...levels];
+    renderAllDayLevels();
+  };
+
+  // Builds the 7 day columns once; each column's fill state is updated
+  // separately by renderDayLevel() as taps happen, not rebuilt from scratch.
+  const buildDayLevelGrid = () => {
+    dayLevelGrid.innerHTML = "";
+    WEEKDAYS.forEach((day, i) => {
+      const col = document.createElement("div");
+      col.className = "day-level";
+
+      const dayLabel = document.createElement("span");
+      dayLabel.className = "day-level-day";
+      dayLabel.textContent = day;
+
+      const track = document.createElement("div");
+      track.className = "day-level-track";
+      track.setAttribute("role", "group");
+      track.setAttribute("aria-label", `${day} volume level`);
+
+      for (let lvl = 1; lvl <= 4; lvl++) {
+        const seg = document.createElement("button");
+        seg.type = "button";
+        seg.className = "day-level-seg";
+        seg.dataset.level = lvl;
+        seg.setAttribute("aria-label", `${day}: ${LEVELS[lvl].label}`);
+        seg.addEventListener("click", () => {
+          ensureCustomSeeded();
+          customLevels[i] = lvl;
+          renderDayLevel(i);
+          persist();
+          render();
+        });
+        track.appendChild(seg);
+      }
+
+      const nameEl = document.createElement("span");
+      nameEl.className = "day-level-name";
+
+      col.appendChild(dayLabel);
+      col.appendChild(track);
+      col.appendChild(nameEl);
+      dayLevelGrid.appendChild(col);
+    });
+  };
 
   const getRhythmWeights = () => {
-    if (rhythmSelect.value === "custom") return getCustomWeights();
+    if (rhythmSelect.value === "custom") return levelsToWeights(getCustomLevels());
     return (RHYTHM_PRESETS[rhythmSelect.value] || RHYTHM_PRESETS.typical).weights;
   };
 
@@ -125,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     if (hoodSelect.value) params.set("hood", hoodSelect.value);
     if (rhythmSelect.value !== "typical") params.set("rhythm", rhythmSelect.value);
-    if (rhythmSelect.value === "custom") params.set("w", getCustomWeights().join(","));
+    if (rhythmSelect.value === "custom") params.set("w", getCustomLevels().join(","));
     const qs = params.toString();
     history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
   };
@@ -144,8 +213,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (rhythm && (RHYTHM_PRESETS[rhythm] || rhythm === "custom")) rhythmSelect.value = rhythm;
     const w = params.get("w");
     if (rhythm === "custom" && w) {
-      const parsed = w.split(",").map((n) => parseFloat(n) || 0);
-      if (parsed.length === WEEKDAYS.length) seedCustomWeights(parsed);
+      const parsed = w.split(",").map((n) => parseInt(n, 10));
+      if (parsed.length === WEEKDAYS.length && parsed.every((n) => n >= 1 && n <= 4)) {
+        seedCustomLevels(parsed);
+      }
     }
     return true;
   };
@@ -161,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
       goal: fields.goal.value,
       neighborhood: hoodSelect.value || "",
       rhythm: rhythmSelect.value,
-      rhythmWeights: rhythmSelect.value === "custom" ? getCustomWeights() : null
+      rhythmLevels: rhythmSelect.value === "custom" ? getCustomLevels() : null
     });
     updateURL();
   };
@@ -361,18 +432,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   rhythmSelect.addEventListener("change", () => {
     updateRhythmVisibility();
-    if (rhythmSelect.value === "custom" && WEEKDAYS.every((day) => weightInputs[day].value === "")) {
-      seedCustomWeights(RHYTHM_PRESETS.typical.weights);
+    if (rhythmSelect.value === "custom") {
+      ensureCustomSeeded();
+      renderAllDayLevels();
     }
     persist();
     render();
-  });
-
-  WEEKDAYS.forEach((day) => {
-    weightInputs[day].addEventListener("input", () => {
-      persist();
-      render();
-    });
   });
 
   $("calcForm").addEventListener("submit", (e) => {
@@ -407,7 +472,7 @@ document.addEventListener("DOMContentLoaded", () => {
     hoodSelect.value = "";
     renderNeighborhoodCard(null);
     rhythmSelect.value = "typical";
-    WEEKDAYS.forEach((day) => (weightInputs[day].value = ""));
+    customLevels = null;
     updateRhythmVisibility();
     history.replaceState(null, "", location.pathname);
     // Let the native reset clear inputs first, then redraw.
@@ -419,6 +484,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ---- init ----------------------------------------------------------------
+
+  buildDayLevelGrid();
 
   // A scenario in the URL (shared link) wins over saved state.
   if (applyURLParams()) {
@@ -441,8 +508,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (saved.rhythm && (RHYTHM_PRESETS[saved.rhythm] || saved.rhythm === "custom")) {
         rhythmSelect.value = saved.rhythm;
       }
-      if (saved.rhythm === "custom" && Array.isArray(saved.rhythmWeights) && saved.rhythmWeights.length === WEEKDAYS.length) {
-        seedCustomWeights(saved.rhythmWeights);
+      if (
+        saved.rhythm === "custom" &&
+        Array.isArray(saved.rhythmLevels) &&
+        saved.rhythmLevels.length === WEEKDAYS.length &&
+        saved.rhythmLevels.every((n) => n >= 1 && n <= 4)
+      ) {
+        seedCustomLevels(saved.rhythmLevels);
       }
     } else {
       renderNeighborhoodCard(null);

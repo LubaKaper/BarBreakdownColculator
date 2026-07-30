@@ -7,7 +7,10 @@ import {
   priceSensitivity,
   distributeWeekly,
   RHYTHM_PRESETS,
-  WEEKDAYS
+  WEEKDAYS,
+  LEVELS,
+  DEFAULT_CUSTOM_LEVELS,
+  levelsToWeights
 } from "../js/calculator-core.js";
 
 const BASE = { rent: 8500, labor: 4200, other: 0, cost: 2.5, price: 14, days: 30, goal: 0 };
@@ -255,5 +258,36 @@ describe("distributeWeekly", () => {
       days.map((d) => d.day),
       ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
     );
+  });
+});
+
+describe("levelsToWeights (tap-to-select Custom rhythm)", () => {
+  test("maps each of the 4 levels to its documented weight", () => {
+    assert.deepEqual(levelsToWeights([1, 2, 3, 4]), [0.5, 1, 1.5, 2]);
+  });
+
+  test("default custom levels are all valid (1-4) and Mon..Sun length", () => {
+    assert.equal(DEFAULT_CUSTOM_LEVELS.length, WEEKDAYS.length);
+    assert.ok(DEFAULT_CUSTOM_LEVELS.every((lvl) => lvl >= 1 && lvl <= 4));
+  });
+
+  test("default custom levels feed distributeWeekly and peak on the busiest day", () => {
+    const weights = levelsToWeights(DEFAULT_CUSTOM_LEVELS);
+    const days = distributeWeekly(280, weights);
+    // DEFAULT_CUSTOM_LEVELS = [2,2,2,3,4,4,3] -> Fri and Sat are both "Packed" (level 4, tied)
+    const peakDays = days.filter((d) => d.isPeak).map((d) => d.day);
+    assert.deepEqual(peakDays.sort(), ["Fri", "Sat"]);
+  });
+
+  test("all-Quiet levels still produce a valid (equal) distribution", () => {
+    const weights = levelsToWeights([1, 1, 1, 1, 1, 1, 1]);
+    const days = distributeWeekly(70, weights);
+    assert.ok(days.every((d) => d.drinks === 10));
+  });
+
+  test("LEVELS is indexed 1-4 (index 0 unused) with ascending weights", () => {
+    assert.equal(LEVELS[0], null);
+    const weights = [1, 2, 3, 4].map((i) => LEVELS[i].weight);
+    assert.deepEqual(weights, [...weights].sort((a, b) => a - b));
   });
 });

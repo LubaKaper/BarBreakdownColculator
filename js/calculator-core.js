@@ -104,3 +104,20 @@ export const distributeWeekly = (weeklyDrinks, weights) => {
     isPeak: drinksByDay[i] === peak && peak > 0
   }));
 };
+
+// Custom rhythm is set as a tap-able 4-level meter per day rather than a
+// raw number — easier to use, especially on a phone. Level is a 1-4 index
+// into this array; index 0 is unused so level numbers map directly.
+export const LEVELS = [
+  null,
+  { key: "quiet", label: "Quiet", weight: 0.5 },
+  { key: "normal", label: "Normal", weight: 1 },
+  { key: "busy", label: "Busy", weight: 1.5 },
+  { key: "packed", label: "Packed", weight: 2 }
+];
+
+// Starting levels when a user first switches to Custom — a Typical-shaped
+// week (weekend busier) expressed as level indices, Mon..Sun.
+export const DEFAULT_CUSTOM_LEVELS = [2, 2, 2, 3, 4, 4, 3];
+
+export const levelsToWeights = (levels) => levels.map((lvl) => LEVELS[lvl].weight);

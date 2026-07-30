@@ -216,15 +216,9 @@
           </select>
 
           <div id="rhythmCustom" class="rhythm-custom" hidden>
-            <span class="field-label">Relative weight per day</span>
-            <div class="rhythm-custom-grid">
-              <div class="rhythm-custom-field"><label for="wMon">Mon</label><input id="wMon" type="number" min="0" step="0.1"></div>
-              <div class="rhythm-custom-field"><label for="wTue">Tue</label><input id="wTue" type="number" min="0" step="0.1"></div>
-              <div class="rhythm-custom-field"><label for="wWed">Wed</label><input id="wWed" type="number" min="0" step="0.1"></div>
-              <div class="rhythm-custom-field"><label for="wThu">Thu</label><input id="wThu" type="number" min="0" step="0.1"></div>
-              <div class="rhythm-custom-field"><label for="wFri">Fri</label><input id="wFri" type="number" min="0" step="0.1"></div>
-              <div class="rhythm-custom-field"><label for="wSat">Sat</label><input id="wSat" type="number" min="0" step="0.1"></div>
-              <div class="rhythm-custom-field"><label for="wSun">Sun</label><input id="wSun" type="number" min="0" step="0.1"></div>
+            <span class="field-label">How busy is each day?</span>
+            <div class="day-level-grid" id="dayLevelGrid">
+              <!-- One .day-level column per weekday, built by app.js -->
             </div>
           </div>
 

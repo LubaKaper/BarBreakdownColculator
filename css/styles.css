@@ -629,14 +629,21 @@ input::placeholder { color: var(--outline); opacity: 0.5; font-weight: 400; }
 
 .rhythm-custom { margin-top: 16px; }
 
-.rhythm-custom-grid {
+/* Tap-to-select 4-level "how busy" meter per day, instead of raw numbers. */
+.day-level-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 8px;
 }
 
-.rhythm-custom-field { display: flex; flex-direction: column; gap: 4px; }
-.rhythm-custom-field label {
+.day-level {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.day-level-day {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -644,22 +651,40 @@ input::placeholder { color: var(--outline); opacity: 0.5; font-weight: 400; }
   color: var(--on-surface-variant);
   opacity: 0.7;
 }
-.rhythm-custom-field input {
+
+.day-level-track {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 3px;
   width: 100%;
-  padding: 8px;
-  border-radius: 8px;
-  background: var(--surface-low);
-  color: var(--on-surface);
-  border: 1px solid var(--glass-border);
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  outline: none;
-  text-align: center;
-  appearance: textfield;
-  -moz-appearance: textfield;
+  height: 56px;
 }
-.rhythm-custom-field input:focus { border-color: var(--violet-ink); box-shadow: 0 0 0 2px rgba(208, 188, 255, 0.3); }
+
+.day-level-seg {
+  flex: 1;
+  width: 100%;
+  padding: 0;
+  border-radius: 4px;
+  background: var(--surface-low);
+  border: 1px solid var(--glass-border);
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.day-level-seg:hover { border-color: var(--violet-ink); }
+.day-level-seg:focus-visible { outline: 2px solid var(--violet-ink); outline-offset: 1px; }
+
+.day-level-track[data-level="1"] .day-level-seg.filled { background: var(--cyan-ink); box-shadow: 0 0 8px rgba(76, 215, 246, 0.45); }
+.day-level-track[data-level="2"] .day-level-seg.filled { background: var(--violet-ink); box-shadow: 0 0 8px rgba(208, 188, 255, 0.45); }
+.day-level-track[data-level="3"] .day-level-seg.filled { background: var(--amber-ink); box-shadow: 0 0 8px rgba(255, 210, 122, 0.45); }
+.day-level-track[data-level="4"] .day-level-seg.filled { background: var(--pink-ink); box-shadow: 0 0 8px rgba(247, 81, 161, 0.45); }
+
+.day-level-name {
+  min-height: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--on-surface-variant);
+  text-align: center;
+}
 
 .rhythm-chart-area { margin-top: 18px; min-height: 150px; }
 .rhythm-chart { height: 150px; }
@@ -742,7 +767,7 @@ input::placeholder { color: var(--outline); opacity: 0.5; font-weight: 400; }
   .chip { flex: 1; }
   .topbar-sub { display: none; }
   .chart { gap: 6px; }
-  .rhythm-custom-grid { grid-template-columns: repeat(4, 1fr); }
+  .day-level-grid { grid-template-columns: repeat(4, 1fr); row-gap: 16px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
