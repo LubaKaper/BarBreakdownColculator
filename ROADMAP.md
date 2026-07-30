@@ -29,11 +29,14 @@ trust, portability, and one killer addition — not feature count.
       per-day weights if the presets don't match their bar.
 - [ ] **Named scenarios**: save "Current bar", "If I raise prices $1",
       "The Greenpoint space" to localStorage; compare side by side.
-- [ ] **Save / send as PDF**: a clean one-page export of the current
-      scenario (numbers, status, weekly rhythm) for when a link isn't the
-      right format — handing it to a business partner, landlord, or
-      accountant. Client-side only (e.g. the browser's print-to-PDF via a
-      dedicated print stylesheet), no server round-trip.
+- [ ] **Save / send as PDF report**: not a screenshot of the page — an
+      actual report layout, purpose-built for someone who wasn't in the
+      app: title, the scenario's inputs, the daily/weekly targets and
+      status, the weekly rhythm breakdown, and a one-line explanation of
+      the math, formatted to print cleanly on a single page. For handing
+      to a business partner, landlord, or accountant. Client-side only
+      (dedicated print stylesheet, browser print-to-PDF), no server
+      round-trip.
 
 ## Phase 3 — Findable and validated
 
