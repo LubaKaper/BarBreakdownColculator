@@ -69,6 +69,15 @@ A little bar chart shows how the daily target shifts if you bump the menu price 
 </td>
 </tr>
 <tr>
+<td width="56" valign="top"><img src="readme-assets/icon-chart.svg" width="40"></td>
+<td>
+
+**Weekly rhythm**
+Splits the weekly target across Mon–Sun — Even, Typical, or Weekend-heavy — so "258 drinks a week" becomes "~55 on Saturday, ~26 on a Monday." Pick Custom to set your own per-day weights if the presets don't match your room.
+
+</td>
+</tr>
+<tr>
 <td width="56" valign="top"><img src="readme-assets/icon-share.svg" width="40"></td>
 <td>
 
@@ -136,8 +145,8 @@ BarBreakdownColculator/
 ├── css/
 │   └── styles.css                 # PRISM theme (dark neon glassmorphism)
 └── js/
-    ├── app.js                     # Entry point: form, chart, neighborhoods, persistence, share
-    ├── calculator-core.js         # Pure math: validate, compute, price sensitivity
+    ├── app.js                     # Entry point: form, charts, neighborhoods, persistence, share
+    ├── calculator-core.js         # Pure math: validate, compute, price sensitivity, weekly rhythm
     ├── data/
     │   └── brooklyn-bar-data.js   # Embedded neighborhood averages
     └── utils/

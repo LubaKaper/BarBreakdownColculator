@@ -70,3 +70,37 @@ export const priceSensitivity = (inputs, span = 3, step = 1) => {
   }
   return points;
 };
+
+// ---- weekly rhythm --------------------------------------------------------
+// Splits the weekly drinks target across days of the week. Weights are
+// relative, not required to sum to 100 — distributeWeekly() normalizes.
+
+export const WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+export const RHYTHM_PRESETS = {
+  even: {
+    label: "Even",
+    weights: [1, 1, 1, 1, 1, 1, 1]
+  },
+  typical: {
+    label: "Typical",
+    weights: [0.8, 0.8, 0.9, 1.1, 1.5, 1.7, 1.2]
+  },
+  weekendHeavy: {
+    label: "Weekend-heavy",
+    weights: [0.5, 0.5, 0.6, 1.0, 1.8, 2.2, 1.4]
+  }
+};
+
+// Distributes weeklyDrinks across 7 days by relative weight.
+// Returns [{ day, drinks, isPeak }], drinks rounded, peak day flagged.
+export const distributeWeekly = (weeklyDrinks, weights) => {
+  const total = weights.reduce((sum, w) => sum + w, 0) || 1;
+  const drinksByDay = weights.map((w) => Math.round((weeklyDrinks * w) / total));
+  const peak = Math.max(...drinksByDay);
+  return WEEKDAYS.map((day, i) => ({
+    day,
+    drinks: drinksByDay[i],
+    isPeak: drinksByDay[i] === peak && peak > 0
+  }));
+};

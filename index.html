@@ -198,6 +198,43 @@
             <div class="metric"><span class="metric-label">Monthly Drinks</span><span id="monthlyDrinks" class="metric-value">—</span></div>
             <div class="metric"><span class="metric-label">Monthly Costs</span><span id="monthlyCosts" class="metric-value">—</span></div>
           </div>
+        </div>
+
+        <!-- Weekly rhythm -->
+        <div class="panel projection">
+          <div class="projection-head">
+            <h4>Weekly Rhythm</h4>
+          </div>
+          <p class="muted">How the weekly target actually lands across the week.</p>
+
+          <label class="field-label" for="rhythmSelect">Rhythm</label>
+          <select id="rhythmSelect" aria-label="Weekly volume pattern">
+            <option value="even">Even — same every day</option>
+            <option value="typical" selected>Typical — modest weekend lean</option>
+            <option value="weekendHeavy">Weekend-heavy — strong Thu–Sat skew</option>
+            <option value="custom">Custom — set your own</option>
+          </select>
+
+          <div id="rhythmCustom" class="rhythm-custom" hidden>
+            <span class="field-label">Relative weight per day</span>
+            <div class="rhythm-custom-grid">
+              <div class="rhythm-custom-field"><label for="wMon">Mon</label><input id="wMon" type="number" min="0" step="0.1"></div>
+              <div class="rhythm-custom-field"><label for="wTue">Tue</label><input id="wTue" type="number" min="0" step="0.1"></div>
+              <div class="rhythm-custom-field"><label for="wWed">Wed</label><input id="wWed" type="number" min="0" step="0.1"></div>
+              <div class="rhythm-custom-field"><label for="wThu">Thu</label><input id="wThu" type="number" min="0" step="0.1"></div>
+              <div class="rhythm-custom-field"><label for="wFri">Fri</label><input id="wFri" type="number" min="0" step="0.1"></div>
+              <div class="rhythm-custom-field"><label for="wSat">Sat</label><input id="wSat" type="number" min="0" step="0.1"></div>
+              <div class="rhythm-custom-field"><label for="wSun">Sun</label><input id="wSun" type="number" min="0" step="0.1"></div>
+            </div>
+          </div>
+
+          <div class="chart-area rhythm-chart-area">
+            <div id="rhythmChart" class="chart rhythm-chart" aria-label="Drinks needed per day of the week"></div>
+            <p id="rhythmChartEmpty" class="chart-empty">Fill in your costs and pricing to see the weekly split.</p>
+          </div>
+        </div>
+
+        <div class="panel actions-panel">
           <div class="actions">
             <button id="calculate" type="submit" class="btn-primary">Recalculate</button>
             <button id="share" type="button" class="btn-ghost btn-icon">

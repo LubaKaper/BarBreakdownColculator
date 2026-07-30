@@ -22,10 +22,11 @@ trust, portability, and one killer addition — not feature count.
 
 ## Phase 2 — The killer feature: reality check
 
-- [ ] **Day-of-week breakdown**: weekly volume mix presets
-      (Quiet / Typical / Weekend-heavy) → "that's ~65 drinks Saturday night,
-      ~12 on a Tuesday." Turns the abstract weekly number into something an
-      owner can sanity-check against their room.
+- [x] **Day-of-week breakdown**: weekly volume mix presets (Even / Typical /
+      Weekend-heavy / Custom) → "that's ~55 drinks Saturday, ~26 on a
+      Monday." Turns the abstract weekly number into something an owner can
+      sanity-check against their room. Custom lets an owner set their own
+      per-day weights if the presets don't match their bar.
 - [ ] **Named scenarios**: save "Current bar", "If I raise prices $1",
       "The Greenpoint space" to localStorage; compare side by side.
 
