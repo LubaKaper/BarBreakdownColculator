@@ -1,0 +1,11 @@
+<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="g" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="1.6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <g fill="none" stroke="#4cd7f6" stroke-width="3" stroke-linecap="round" filter="url(#g)">
+    <path d="M8 33V20M20 33V8M32 33V17"/>
+  </g>
+</svg>

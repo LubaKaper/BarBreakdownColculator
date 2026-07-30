@@ -1,0 +1,60 @@
+<svg viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="glowCyan" cx="15%" cy="30%" r="55%">
+      <stop offset="0%" stop-color="#4cd7f6" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#4cd7f6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowPink" cx="88%" cy="75%" r="55%">
+      <stop offset="0%" stop-color="#f751a1" stop-opacity="0.26"/>
+      <stop offset="100%" stop-color="#f751a1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glassStroke" gradientUnits="userSpaceOnUse" x1="10" y1="8" x2="114" y2="154">
+      <stop offset="0%" stop-color="#4cd7f6"/>
+      <stop offset="55%" stop-color="#d0bcff"/>
+      <stop offset="100%" stop-color="#f751a1"/>
+    </linearGradient>
+    <linearGradient id="titleGradA" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4cd7f6"/>
+      <stop offset="100%" stop-color="#d0bcff"/>
+    </linearGradient>
+    <linearGradient id="titleGradB" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#d0bcff"/>
+      <stop offset="100%" stop-color="#f751a1"/>
+    </linearGradient>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1000" height="260" rx="24" fill="#0b1326"/>
+  <rect width="1000" height="260" rx="24" fill="url(#glowCyan)"/>
+  <rect width="1000" height="260" rx="24" fill="url(#glowPink)"/>
+  <rect x="1" y="1" width="998" height="258" rx="23" fill="none" stroke="rgba(255,255,255,0.08)"/>
+
+  <!-- martini mark -->
+  <g transform="translate(60,55)" filter="url(#softGlow)">
+    <path d="M10 8 H150 L80 92 Z" fill="none" stroke="url(#glassStroke)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="80" y1="92" x2="80" y2="150" stroke="url(#glassStroke)" stroke-width="9" stroke-linecap="round"/>
+    <line x1="46" y1="154" x2="114" y2="154" stroke="url(#glassStroke)" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="108" cy="30" r="7" fill="#f751a1"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="240" y="118" font-family="Montserrat, sans-serif" font-weight="800" font-size="64" fill="url(#titleGradA)">PRISM</text>
+  <text x="470" y="118" font-family="Montserrat, sans-serif" font-weight="800" font-size="64" fill="url(#titleGradB)">CALC</text>
+  <text x="242" y="158" font-family="Montserrat, sans-serif" font-weight="600" font-size="21" letter-spacing="2" fill="#cbc3d7" opacity="0.8">BAR BREAK-EVEN CALCULATOR</text>
+
+  <!-- price sensitivity bars, decorative -->
+  <g transform="translate(700,60)" opacity="0.9">
+    <rect x="0"  y="90" width="26" height="70" rx="6" fill="url(#glassStroke)" opacity="0.35"/>
+    <rect x="36" y="60" width="26" height="100" rx="6" fill="url(#glassStroke)" opacity="0.55"/>
+    <rect x="72" y="30" width="26" height="130" rx="6" fill="#4cd7f6" filter="url(#softGlow)"/>
+    <rect x="108" y="70" width="26" height="90" rx="6" fill="url(#glassStroke)" opacity="0.5"/>
+    <rect x="144" y="95" width="26" height="65" rx="6" fill="url(#glassStroke)" opacity="0.3"/>
+    <line x1="0" y1="160" x2="170" y2="160" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+  </g>
+</svg>

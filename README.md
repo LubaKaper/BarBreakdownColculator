@@ -1,64 +1,142 @@
-# PRISM CALC — Bar Break-Even Calculator
+<p align="center">
+  <img src="readme-assets/banner.svg" alt="PRISM CALC — Bar Break-Even Calculator" width="100%">
+</p>
 
-A mobile-friendly web app that tells bar owners how many drinks they need to sell per day to cover their costs, with Brooklyn neighborhood averages for quick benchmarking. Dark neon glassmorphism UI, zero dependencies.
+<p align="center">
+  <em>Pour the numbers in. Know your number. Keep the lights on.</em>
+</p>
 
-## Features
+<p align="center">
+  <a href="https://lubakaper.github.io/BarBreakdownColculator/"><strong>Open the app →</strong></a>
+</p>
 
-- **Installable app (PWA)** — add to a phone home screen, opens fullscreen, works offline
-- **Shareable links** — inputs live in the URL; the Share button copies a link that opens pre-filled
-- **Profit goal mode** — optional monthly profit target; the headline shows drinks/day to hit it, with break-even noted alongside
-- **Live break-even analysis** — results update as you type; no need to press Calculate
-- **Daily drinks target** with sustainability status (Sustainable ≤ 100/day, Tight ≤ 200/day, Unsustainable above)
-- **Weekly targets** — drinks per week and weekly revenue needed
-- **Price sensitivity chart** — drinks/day needed at price points ±$3 around yours
-- **Brooklyn neighborhood presets** — pick one of 15 neighborhoods to load average rent, labor cost, and drink price
-- **Detailed metrics** — profit per drink, margin %, monthly drinks needed, monthly costs
-- **Persistence** — inputs and selected neighborhood survive a page reload (localStorage)
-- Validation with clear error messages, accessible form controls, responsive layout
+<img src="readme-assets/divider.svg" alt="" width="100%">
 
-## Formulas
+## The pitch
 
-- Profit per drink = selling price − cost to make
-- Total monthly costs = rent + labor + other expenses
-- Drinks per day = (monthly costs ÷ profit per drink) ÷ days open
-- Weekly revenue target = drinks per day × 7 × selling price
+Every bar owner does this math on a napkin at 1am: *rent, payroll, pour cost, drink price — how many pours a night actually keeps this place open?*
 
-## Usage
+PRISM CALC does the napkin math for you, live, with a little neon flair. Type five numbers, get your number. No spreadsheet, no login, no nonsense.
 
-Open the app and enter your numbers, or pick a neighborhood to prefill averages:
+<img src="readme-assets/divider.svg" alt="" width="100%">
 
-- Monthly Rent, Labor & Staffing, Other Monthly Expenses ($)
-- Avg. Drink Price and Cost to Make One Drink ($)
-- Days Open Per Month (default 30)
+## What's behind the bar
 
-Results appear as soon as price and cost are filled in.
+<table>
+<tr>
+<td width="56" valign="top"><img src="readme-assets/icon-chart.svg" width="40"></td>
+<td>
 
-### Live Demo
+**Live break-even math**
+Results update as you type — rent, labor, other costs, pour cost, price, days open. Drop a number in, watch the target move.
 
-https://lubakaper.github.io/BarBreakdownColculator/
+</td>
+</tr>
+<tr>
+<td width="56" valign="top"><img src="readme-assets/icon-bolt.svg" width="40"></td>
+<td>
 
-### Running locally
+**A status you can feel**
+Sustainable, Tight, or Unsustainable — color-coded so you know at a glance whether tonight's number is realistic or a fantasy.
 
-The app has no build step and no runtime dependencies (fonts come from Google Fonts). Neighborhood data is embedded as a JS module, so no server is strictly required — but ES modules load most reliably over HTTP:
+</td>
+</tr>
+<tr>
+<td width="56" valign="top"><img src="readme-assets/icon-bank.svg" width="40"></td>
+<td>
+
+**Profit goal, not just survival**
+Nobody opens a bar to break even. Set a monthly profit target and the headline shows what it actually takes to pay yourself.
+
+</td>
+</tr>
+<tr>
+<td width="56" valign="top"><img src="readme-assets/icon-pin.svg" width="40"></td>
+<td>
+
+**Brooklyn neighborhood presets**
+Fifteen neighborhoods, one dropdown. Pick DUMBO or Bed-Stuy and the averages for rent, labor, and drink price pour right into the form.
+
+</td>
+</tr>
+<tr>
+<td width="56" valign="top"><img src="readme-assets/icon-chart.svg" width="40"></td>
+<td>
+
+**Price sensitivity, at a glance**
+A little bar chart shows how the daily target shifts if you bump the menu price up or down a few dollars — before you touch the menu.
+
+</td>
+</tr>
+<tr>
+<td width="56" valign="top"><img src="readme-assets/icon-share.svg" width="40"></td>
+<td>
+
+**Text it to your business partner**
+Every scenario lives in the link. Hit Share, send it, they open it and see your exact numbers — no account, no export, no email attachment.
+
+</td>
+</tr>
+</table>
+
+**Also on the bar:** installable as a phone app that works with no signal, your numbers saved on your own device (nowhere else), and full keyboard/screen-reader support.
+
+<img src="readme-assets/divider.svg" alt="" width="100%">
+
+## The math on the napkin
+
+```
+profit per drink   = selling price − cost to make
+monthly costs       = rent + labor + other expenses (+ profit goal, if set)
+drinks per day       = (monthly costs ÷ profit per drink) ÷ days open
+weekly revenue target = drinks per day × 7 × selling price
+```
+
+No hidden fees, no black box — that's the whole recipe.
+
+<img src="readme-assets/divider.svg" alt="" width="100%">
+
+## Order at the bar
+
+1. Open the app (or install it — see below)
+2. Pour in your rent, labor, other expenses, pour cost, and drink price
+3. Optional: set a monthly profit goal if break-even isn't the point
+4. Watch your daily drinks target land, live
+5. Hit **Share** to send the scenario to a partner, or **Reset** to start a fresh tab
+
+Prefer a running start? Pick a Brooklyn neighborhood in the sidebar and the form fills itself.
+
+### Install it like a real app
+
+On your phone: open the [live link](https://lubakaper.github.io/BarBreakdownColculator/), then **Add to Home Screen**. It opens fullscreen, no browser chrome, and keeps working even if the wifi at the bar is garbage.
+
+<img src="readme-assets/divider.svg" alt="" width="100%">
+
+## Running the bar locally
+
+No build step, no dependencies to install. Fonts come from Google Fonts; everything else is vanilla JS.
 
 ```bash
 python3 -m http.server 8000
 ```
 
-Then visit http://localhost:8000
+Then visit `http://localhost:8000`. (A plain server keeps the JS modules and service worker happy — opening `index.html` straight from disk works too, minus offline caching.)
 
-## Project Structure
+<img src="readme-assets/divider.svg" alt="" width="100%">
+
+## What's under the bar top
 
 ```
 BarBreakdownColculator/
 ├── index.html                     # Page structure
 ├── manifest.webmanifest           # PWA manifest
 ├── sw.js                          # Service worker (offline cache; bump CACHE_NAME on deploy)
-├── icons/                         # App icons (512/192/apple-touch)
+├── icons/                         # App icons (512 / 192 / apple-touch)
+├── readme-assets/                 # Banner + icons for this README
 ├── css/
 │   └── styles.css                 # PRISM theme (dark neon glassmorphism)
 └── js/
-    ├── app.js                     # Entry point: form, chart, neighborhoods, persistence
+    ├── app.js                     # Entry point: form, chart, neighborhoods, persistence, share
     ├── calculator-core.js         # Pure math: validate, compute, price sensitivity
     ├── data/
     │   └── brooklyn-bar-data.js   # Embedded neighborhood averages
@@ -68,10 +146,16 @@ BarBreakdownColculator/
         └── ui.js                  # Count-up animation helpers
 ```
 
-### Updating neighborhood data
+### Restocking the neighborhood data
 
-Edit `js/data/brooklyn-bar-data.js`. Each entry needs `avgCommercialRent`, `avgDrinkPrice`, `avgLaborCost`, and `displayName`.
+Edit `js/data/brooklyn-bar-data.js`. Each entry needs `avgCommercialRent`, `avgDrinkPrice`, `avgLaborCost`, and `displayName`. These are illustrative estimates, not a market survey — always check against your own lease and payroll.
+
+<img src="readme-assets/divider.svg" alt="" width="100%">
+
+## What's next
+
+There's a short roadmap in [`ROADMAP.md`](ROADMAP.md) — day-of-week volume breakdowns, saved scenarios, that kind of thing. No accounts, no backend, no bloat. Last call is early on this one.
 
 ## License
 
-MIT License — feel free to use and modify.
+MIT — pour, remix, and serve however you like.
