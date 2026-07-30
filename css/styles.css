@@ -623,6 +623,50 @@ input::placeholder { color: var(--outline); opacity: 0.5; font-weight: 400; }
 }
 .metric-value { font-size: 22px; font-weight: 700; }
 
+/* ---- weekly rhythm -------------------------------------------------------- */
+
+.projection + .projection { margin-top: 20px; }
+
+.rhythm-custom { margin-top: 16px; }
+
+.rhythm-custom-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.rhythm-custom-field { display: flex; flex-direction: column; gap: 4px; }
+.rhythm-custom-field label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--on-surface-variant);
+  opacity: 0.7;
+}
+.rhythm-custom-field input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  background: var(--surface-low);
+  color: var(--on-surface);
+  border: 1px solid var(--glass-border);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.rhythm-custom-field input:focus { border-color: var(--violet-ink); box-shadow: 0 0 0 2px rgba(208, 188, 255, 0.3); }
+
+.rhythm-chart-area { margin-top: 18px; min-height: 150px; }
+.rhythm-chart { height: 150px; }
+
+.actions-panel { margin-top: 20px; }
+.actions-panel .actions { justify-content: flex-start; }
+
 /* ---- buttons ------------------------------------------------------------ */
 
 .actions { display: flex; align-items: center; gap: 14px; }
@@ -698,6 +742,7 @@ input::placeholder { color: var(--outline); opacity: 0.5; font-weight: 400; }
   .chip { flex: 1; }
   .topbar-sub { display: none; }
   .chart { gap: 6px; }
+  .rhythm-custom-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 @media (prefers-reduced-motion: reduce) {

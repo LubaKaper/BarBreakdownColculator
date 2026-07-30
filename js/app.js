@@ -1,5 +1,14 @@
 // App entry: wires the form, neighborhood picker, hero stats and chart.
-import { validate, compute, getStatus, STATUS_LABELS, priceSensitivity } from "./calculator-core.js";
+import {
+  validate,
+  compute,
+  getStatus,
+  STATUS_LABELS,
+  priceSensitivity,
+  WEEKDAYS,
+  RHYTHM_PRESETS,
+  distributeWeekly
+} from "./calculator-core.js";
 import { NEIGHBORHOODS, MAX_RENT, sortedNeighborhoods } from "./data/brooklyn-bar-data.js";
 import { saveState, restoreState } from "./utils/state.js";
 import { fmtMoney, fmtInt } from "./utils/format.js";
@@ -62,6 +71,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const hoodSelect = $("neighborhoodSelect");
   const hoodCard = $("neighborhoodCard");
 
+  const rhythmSelect = $("rhythmSelect");
+  const rhythmCustomEl = $("rhythmCustom");
+  const rhythmChartEl = $("rhythmChart");
+  const rhythmChartEmptyEl = $("rhythmChartEmpty");
+  const weightInputs = WEEKDAYS.reduce((acc, day) => {
+    acc[day] = $(`w${day}`);
+    return acc;
+  }, {});
+
   // ---- helpers -------------------------------------------------------------
 
   const readInputs = () => ({
@@ -78,6 +96,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // avoids showing errors on a fresh, untouched form.
   const formReady = () => fields.price.value !== "" && fields.cost.value !== "";
 
+  // ---- weekly rhythm ---------------------------------------------------------
+
+  const seedCustomWeights = (weights) => {
+    WEEKDAYS.forEach((day, i) => (weightInputs[day].value = weights[i]));
+  };
+
+  const getCustomWeights = () => WEEKDAYS.map((day) => parseFloat(weightInputs[day].value) || 0);
+
+  const getRhythmWeights = () => {
+    if (rhythmSelect.value === "custom") return getCustomWeights();
+    return (RHYTHM_PRESETS[rhythmSelect.value] || RHYTHM_PRESETS.typical).weights;
+  };
+
+  const updateRhythmVisibility = () => {
+    rhythmCustomEl.hidden = rhythmSelect.value !== "custom";
+  };
+
   // ---- shareable URLs ------------------------------------------------------
 
   const URL_KEYS = ["rent", "labor", "other", "cost", "price", "days", "goal"];
@@ -89,6 +124,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (fields[k].value !== "") params.set(k, fields[k].value);
     });
     if (hoodSelect.value) params.set("hood", hoodSelect.value);
+    if (rhythmSelect.value !== "typical") params.set("rhythm", rhythmSelect.value);
+    if (rhythmSelect.value === "custom") params.set("w", getCustomWeights().join(","));
     const qs = params.toString();
     history.replaceState(null, "", qs ? `?${qs}` : location.pathname);
   };
@@ -96,13 +133,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Returns true if the URL carried a scenario (takes precedence over storage).
   const applyURLParams = () => {
     const params = new URLSearchParams(location.search);
-    const hasAny = URL_KEYS.some((k) => params.has(k)) || params.has("hood");
+    const hasAny = URL_KEYS.some((k) => params.has(k)) || params.has("hood") || params.has("rhythm");
     if (!hasAny) return false;
     URL_KEYS.forEach((k) => {
       if (params.has(k)) fields[k].value = params.get(k);
     });
     const hood = params.get("hood");
     if (hood && NEIGHBORHOODS[hood]) hoodSelect.value = hood;
+    const rhythm = params.get("rhythm");
+    if (rhythm && (RHYTHM_PRESETS[rhythm] || rhythm === "custom")) rhythmSelect.value = rhythm;
+    const w = params.get("w");
+    if (rhythm === "custom" && w) {
+      const parsed = w.split(",").map((n) => parseFloat(n) || 0);
+      if (parsed.length === WEEKDAYS.length) seedCustomWeights(parsed);
+    }
     return true;
   };
 
@@ -115,7 +159,9 @@ document.addEventListener("DOMContentLoaded", () => {
       price: fields.price.value,
       days: fields.days.value,
       goal: fields.goal.value,
-      neighborhood: hoodSelect.value || ""
+      neighborhood: hoodSelect.value || "",
+      rhythm: rhythmSelect.value,
+      rhythmWeights: rhythmSelect.value === "custom" ? getCustomWeights() : null
     });
     updateURL();
   };
@@ -141,6 +187,8 @@ document.addEventListener("DOMContentLoaded", () => {
     Object.values(metrics).forEach((el) => (el.textContent = "—"));
     chartEl.innerHTML = "";
     chartEmptyEl.hidden = false;
+    rhythmChartEl.innerHTML = "";
+    rhythmChartEmptyEl.hidden = false;
   };
 
   const renderChart = (inputs) => {
@@ -167,6 +215,34 @@ document.addEventListener("DOMContentLoaded", () => {
       bar.appendChild(fill);
       bar.appendChild(label);
       chartEl.appendChild(bar);
+    });
+  };
+
+  const renderRhythmChart = (weeklyDrinks) => {
+    const weights = getRhythmWeights();
+    const days = distributeWeekly(weeklyDrinks, weights);
+    rhythmChartEl.innerHTML = "";
+    const max = Math.max(...days.map((d) => d.drinks));
+    rhythmChartEmptyEl.hidden = max > 0;
+    if (max <= 0) return;
+
+    days.forEach((d) => {
+      const bar = document.createElement("div");
+      bar.className = "chart-bar" + (d.isPeak ? " current" : "");
+      const fill = document.createElement("div");
+      fill.className = "chart-fill";
+      fill.style.height = `${Math.max(6, (d.drinks / max) * 100)}%`;
+      fill.title = `${d.day}: ${d.drinks} drinks`;
+      const count = document.createElement("span");
+      count.className = "chart-count";
+      count.textContent = d.drinks;
+      const label = document.createElement("span");
+      label.className = "chart-label";
+      label.textContent = d.day;
+      fill.appendChild(count);
+      bar.appendChild(fill);
+      bar.appendChild(label);
+      rhythmChartEl.appendChild(bar);
     });
   };
 
@@ -221,6 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
     metrics.margin.textContent = `${r.marginPct.toFixed(0)}%`;
 
     renderChart(inputs);
+    renderRhythmChart(r.weeklyDrinksTarget);
   };
 
   // ---- neighborhoods -------------------------------------------------------
@@ -282,6 +359,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  rhythmSelect.addEventListener("change", () => {
+    updateRhythmVisibility();
+    if (rhythmSelect.value === "custom" && WEEKDAYS.every((day) => weightInputs[day].value === "")) {
+      seedCustomWeights(RHYTHM_PRESETS.typical.weights);
+    }
+    persist();
+    render();
+  });
+
+  WEEKDAYS.forEach((day) => {
+    weightInputs[day].addEventListener("input", () => {
+      persist();
+      render();
+    });
+  });
+
   $("calcForm").addEventListener("submit", (e) => {
     e.preventDefault();
     render({ animate: true });
@@ -313,6 +406,9 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("barCalculator");
     hoodSelect.value = "";
     renderNeighborhoodCard(null);
+    rhythmSelect.value = "typical";
+    WEEKDAYS.forEach((day) => (weightInputs[day].value = ""));
+    updateRhythmVisibility();
     history.replaceState(null, "", location.pathname);
     // Let the native reset clear inputs first, then redraw.
     requestAnimationFrame(() => {
@@ -342,11 +438,18 @@ document.addEventListener("DOMContentLoaded", () => {
       } else {
         renderNeighborhoodCard(null);
       }
+      if (saved.rhythm && (RHYTHM_PRESETS[saved.rhythm] || saved.rhythm === "custom")) {
+        rhythmSelect.value = saved.rhythm;
+      }
+      if (saved.rhythm === "custom" && Array.isArray(saved.rhythmWeights) && saved.rhythmWeights.length === WEEKDAYS.length) {
+        seedCustomWeights(saved.rhythmWeights);
+      }
     } else {
       renderNeighborhoodCard(null);
     }
   }
 
+  updateRhythmVisibility();
   render();
 
   // Offline support / installability.

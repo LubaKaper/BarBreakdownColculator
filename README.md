@@ -10,6 +10,10 @@
   <a href="https://lubakaper.github.io/BarBreakdownColculator/"><strong>Open the app →</strong></a>
 </p>
 
+<p align="center">
+  <a href="https://github.com/LubaKaper/BarBreakdownColculator/actions/workflows/test.yml"><img src="https://github.com/LubaKaper/BarBreakdownColculator/actions/workflows/test.yml/badge.svg" alt="Test status"></a>
+</p>
+
 <img src="readme-assets/divider.svg" alt="" width="100%">
 
 ## The pitch
@@ -69,6 +73,15 @@ A little bar chart shows how the daily target shifts if you bump the menu price 
 </td>
 </tr>
 <tr>
+<td width="56" valign="top"><img src="readme-assets/icon-chart.svg" width="40"></td>
+<td>
+
+**Weekly rhythm**
+Splits the weekly target across Mon–Sun — Even, Typical, or Weekend-heavy — so "258 drinks a week" becomes "~55 on Saturday, ~26 on a Monday." Pick Custom to set your own per-day weights if the presets don't match your room.
+
+</td>
+</tr>
+<tr>
 <td width="56" valign="top"><img src="readme-assets/icon-share.svg" width="40"></td>
 <td>
 
@@ -122,6 +135,16 @@ python3 -m http.server 8000
 
 Then visit `http://localhost:8000`. (A plain server keeps the JS modules and service worker happy — opening `index.html` straight from disk works too, minus offline caching.)
 
+### Running the tests
+
+The break-even math is the one thing in this app that has to be right, so it's covered by an automated suite — no framework, just Node's built-in test runner:
+
+```bash
+npm test
+```
+
+Covers `calculator-core.js` (validation, break-even/profit-goal math, price sensitivity, weekly rhythm distribution) and the money/integer formatters, including boundary and edge cases: zero and negative inputs, price equal to or below cost, tied peak days, an all-zero custom weekly rhythm, and the always-round-up behavior of the drinks target.
+
 <img src="readme-assets/divider.svg" alt="" width="100%">
 
 ## What's under the bar top
@@ -131,13 +154,17 @@ BarBreakdownColculator/
 ├── index.html                     # Page structure
 ├── manifest.webmanifest           # PWA manifest
 ├── sw.js                          # Service worker (offline cache; bump CACHE_NAME on deploy)
+├── package.json                   # Just "npm test" — no runtime dependencies
 ├── icons/                         # App icons (512 / 192 / apple-touch)
 ├── readme-assets/                 # Banner + icons for this README
+├── tests/                         # node --test suite for the math
+│   ├── calculator-core.test.js
+│   └── format.test.js
 ├── css/
 │   └── styles.css                 # PRISM theme (dark neon glassmorphism)
 └── js/
-    ├── app.js                     # Entry point: form, chart, neighborhoods, persistence, share
-    ├── calculator-core.js         # Pure math: validate, compute, price sensitivity
+    ├── app.js                     # Entry point: form, charts, neighborhoods, persistence, share
+    ├── calculator-core.js         # Pure math: validate, compute, price sensitivity, weekly rhythm
     ├── data/
     │   └── brooklyn-bar-data.js   # Embedded neighborhood averages
     └── utils/
