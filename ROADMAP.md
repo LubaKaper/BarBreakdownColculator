@@ -29,6 +29,11 @@ trust, portability, and one killer addition — not feature count.
       per-day weights if the presets don't match their bar.
 - [ ] **Named scenarios**: save "Current bar", "If I raise prices $1",
       "The Greenpoint space" to localStorage; compare side by side.
+- [ ] **Save / send as PDF**: a clean one-page export of the current
+      scenario (numbers, status, weekly rhythm) for when a link isn't the
+      right format — handing it to a business partner, landlord, or
+      accountant. Client-side only (e.g. the browser's print-to-PDF via a
+      dedicated print stylesheet), no server round-trip.
 
 ## Phase 3 — Findable and validated
 
