@@ -229,7 +229,10 @@ body {
 .chip-cyan { box-shadow: 0 0 20px rgba(76, 215, 246, 0.2);  border-color: rgba(76, 215, 246, 0.25); }
 .chip-pink { box-shadow: 0 0 20px rgba(247, 81, 161, 0.2);  border-color: rgba(247, 81, 161, 0.25); }
 
-.chip-icon { font-size: 20px; }
+.chip-icon { display: flex; }
+.chip-icon svg { width: 26px; height: 26px; }
+.chip-cyan .chip-icon { color: var(--cyan); filter: drop-shadow(0 0 6px rgba(76, 215, 246, 0.6)); }
+.chip-pink .chip-icon { color: var(--pink-soft); filter: drop-shadow(0 0 6px rgba(247, 81, 161, 0.6)); }
 .chip-value { font-size: 22px; font-weight: 700; }
 .chip-cyan .chip-value { color: var(--cyan); }
 .chip-pink .chip-value { color: var(--pink-soft); }
@@ -244,6 +247,9 @@ body {
 /* ---- sidebar / neighborhoods -------------------------------------------- */
 
 .section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 0 0 12px;
   font-size: 13px;
   font-weight: 600;
@@ -251,6 +257,10 @@ body {
   text-transform: uppercase;
   color: var(--on-surface-variant);
 }
+
+.title-icon { display: inline-flex; }
+.title-icon svg { width: 15px; height: 15px; }
+.section-title .title-icon { color: var(--pink); filter: drop-shadow(0 0 5px rgba(247, 81, 161, 0.6)); }
 
 select {
   width: 100%;
@@ -334,10 +344,10 @@ select:focus { border-color: var(--cyan); box-shadow: 0 0 0 2px rgba(76, 215, 24
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  font-size: 18px;
 }
-.icon-violet { background: rgba(208, 188, 255, 0.15); }
-.icon-cyan   { background: rgba(76, 215, 246, 0.15); }
+.panel-icon svg { width: 20px; height: 20px; }
+.icon-violet { background: rgba(208, 188, 255, 0.15); color: var(--violet); }
+.icon-cyan   { background: rgba(76, 215, 246, 0.15); color: var(--cyan); }
 
 .field-label {
   display: block;
@@ -410,6 +420,9 @@ input::placeholder { color: var(--outline); opacity: 0.5; font-weight: 400; }
 .projection-head h4 { margin: 0; font-size: 20px; font-weight: 700; }
 
 .realtime {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: 0.06em;
