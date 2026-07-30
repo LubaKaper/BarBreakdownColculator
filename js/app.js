@@ -452,8 +452,25 @@ document.addEventListener("DOMContentLoaded", () => {
   updateRhythmVisibility();
   render();
 
-  // Offline support / installability.
+  // Offline support / installability. When a deploy ships new HTML but the
+  // page is still controlled by an older service worker, that old worker
+  // keeps serving its stale cached CSS/JS for the rest of this page load —
+  // there's no way to swap them mid-load. Once the new worker finishes
+  // activating and takes control, reload once so the next load is fully
+  // consistent instead of leaving visitors on a stale/new mix.
   if ("serviceWorker" in navigator) {
+    // Only reload on a controller change if a worker was ALREADY controlling
+    // this page — that means an update just took over. On a brand-new visit
+    // (no prior controller), the first controllerchange is just the initial
+    // activation and there's nothing stale to fix, so skip it.
+    const hadController = Boolean(navigator.serviceWorker.controller);
     navigator.serviceWorker.register("./sw.js").catch(() => {});
+
+    let reloadedForUpdate = false;
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (!hadController || reloadedForUpdate) return;
+      reloadedForUpdate = true;
+      location.reload();
+    });
   }
 });
