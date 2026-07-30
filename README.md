@@ -131,6 +131,16 @@ python3 -m http.server 8000
 
 Then visit `http://localhost:8000`. (A plain server keeps the JS modules and service worker happy — opening `index.html` straight from disk works too, minus offline caching.)
 
+### Running the tests
+
+The break-even math is the one thing in this app that has to be right, so it's covered by an automated suite — no framework, just Node's built-in test runner:
+
+```bash
+npm test
+```
+
+Covers `calculator-core.js` (validation, break-even/profit-goal math, price sensitivity, weekly rhythm distribution) and the money/integer formatters, including boundary and edge cases: zero and negative inputs, price equal to or below cost, tied peak days, an all-zero custom weekly rhythm, and the always-round-up behavior of the drinks target.
+
 <img src="readme-assets/divider.svg" alt="" width="100%">
 
 ## What's under the bar top
@@ -140,8 +150,12 @@ BarBreakdownColculator/
 ├── index.html                     # Page structure
 ├── manifest.webmanifest           # PWA manifest
 ├── sw.js                          # Service worker (offline cache; bump CACHE_NAME on deploy)
+├── package.json                   # Just "npm test" — no runtime dependencies
 ├── icons/                         # App icons (512 / 192 / apple-touch)
 ├── readme-assets/                 # Banner + icons for this README
+├── tests/                         # node --test suite for the math
+│   ├── calculator-core.test.js
+│   └── format.test.js
 ├── css/
 │   └── styles.css                 # PRISM theme (dark neon glassmorphism)
 └── js/
