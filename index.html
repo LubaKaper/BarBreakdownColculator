@@ -2,211 +2,175 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Bar Break-Even Calculator | Daily Drinks Needed</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PRISM CALC | Bar Break-Even Calculator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
-  <script type="module" src="js/utils/format.js"></script>
-  <script type="module" src="js/utils/state.js"></script>
-  <script type="module" src="js/utils/ui.js"></script>
-  <script type="module" src="js/calculator-core.js"></script>
-  <script type="module" src="js/neighborhoods.js"></script>
-  <script type="module" src="js/calculator.js"></script>
+  <script type="module" src="js/app.js"></script>
 </head>
 <body>
-  <header class="toolbar">
-    <div class="toolbar-row">
-      <h1>Bar Break-Even Calculator</h1>
-      <div class="neighborhood-select">
-        <label for="neighborhoodSelect" class="neighborhood-label">📍 Compare with Brooklyn Averages</label>
-        <select id="neighborhoodSelect" aria-label="Select a Brooklyn neighborhood to see average bar costs" style="transition: none !important; transform: none !important; animation: none !important;">
-          <option value="" disabled selected>Select a neighborhood...</option>
-        </select>
-      </div>
+  <!-- Ambient light leaks -->
+  <div class="glow glow-violet" aria-hidden="true"></div>
+  <div class="glow glow-cyan" aria-hidden="true"></div>
+  <div class="glow glow-pink" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <h1><span class="brand-a">PRISM</span> <span class="brand-b">CALC</span></h1>
     </div>
+    <span class="topbar-sub">Bar Break-Even · Brooklyn</span>
   </header>
 
-  <div class="container">
-    <section class="neighborhood-card" role="complementary">
-      <h2>Brooklyn Averages</h2>
-      <p>Compare your numbers to local bar averages</p>
-      <div id="averagesDisplay" aria-live="polite"></div>
-    </section>
-
-    <main class="card" role="main">
-      <h1>Bar Break-Even Calculator</h1>
-      <p class="lead">Calculate your daily drink sales target to cover fixed costs and stay profitable.</p>
-
-      <form id="calcForm" novalidate>
-        <div class="grid">
-          <div>
-            <label for="rent"><span class="field-icon">🏢</span> Monthly Rent ($)</label>
-            <input id="rent" name="rent" type="number" min="0" step="0.01" placeholder="e.g. 4000" required
-                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off">
-          </div>
-
-          <div>
-            <label for="labor"><span class="field-icon">👥</span> Monthly Labor Costs ($)</label>
-            <input id="labor" name="labor" type="number" min="0" step="0.01" placeholder="e.g. 8000" required
-                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off">
-          </div>
-
-          <div>
-            <label for="other"><span class="field-icon">⚡</span> Other Monthly Expenses ($)</label>
-            <input id="other" name="other" type="number" min="0" step="0.01" placeholder="e.g. 2000" required
-                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off" value="0">
-          </div>
-
-          <div>
-            <label for="cost"><span class="field-icon">🥃</span> Cost to Make One Drink ($)</label>
-            <input id="cost" name="cost" type="number" min="0" step="0.01" placeholder="e.g. 1.20" required
-                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off">
-          </div>
-
-          <div>
-            <label for="price"><span class="field-icon">💵</span> Selling Price Per Drink ($)</label>
-            <input id="price" name="price" type="number" min="0" step="0.01" placeholder="e.g. 6.50" required
-                   inputmode="decimal" pattern="[0-9]*[.,]?[0-9]+" autocomplete="off">
-          </div>
-
-          <div>
-            <label for="days"><span class="field-icon">📅</span> Days Open Per Month</label>
-            <input id="days" name="days" type="number" min="1" step="1" value="30" required
-                   inputmode="decimal" pattern="[0-9]*" autocomplete="off">
-          </div>
+  <main class="layout">
+    <!-- Hero -->
+    <section class="panel hero" aria-live="polite">
+      <div class="hero-left">
+        <p class="eyebrow">Break-Even Analysis</p>
+        <h2>Daily Drinks Target</h2>
+        <div class="hero-number">
+          <span id="heroValue" class="hero-value">—</span>
+          <span id="heroUnit" class="hero-unit">drinks/day</span>
         </div>
-
-        <div class="actions">
-          <button id="calculate" type="submit">Calculate Break-Even</button>
-          <button id="reset" type="reset" class="secondary">Reset Form</button>
-          <div class="muted">All fields required. Enter amounts in $.</div>
+        <span id="statusPill" class="status-pill" hidden></span>
+      </div>
+      <div class="hero-chips">
+        <div class="chip chip-cyan">
+          <span class="chip-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16l-8 9z"/>
+              <path d="M12 13v6M8 19h8"/>
+              <circle cx="14.5" cy="6.5" r="1.3" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span id="weeklyDrinks" class="chip-value">—</span>
+          <span class="chip-label">Drinks/Wk</span>
         </div>
-
-        <div id="error" class="error" role="alert" aria-live="polite" style="display:none"></div>
-      </form>
-    </main>
-
-    <div id="resultCard" class="card result-card" role="status" aria-live="polite" style="display:none">
-      <div id="result" class="result">
-        <h2><span class="status"></span> <span id="headline"></span></h2>
-        <div id="details" class="muted"></div>
-        <div class="metrics">
-          <div class="metric">
-            <div class="metric-label">Profit per Drink</div>
-            <div class="metric-value" id="profitPerDrink"></div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Monthly Drinks Needed</div>
-            <div class="metric-value" id="monthlyDrinks"></div>
-          </div>
-          <div class="metric">
-            <div class="metric-label">Monthly Costs</div>
-            <div class="metric-value" id="monthlyCosts"></div>
-          </div>
+        <div class="chip chip-pink">
+          <span class="chip-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 17 9 11 13 15 21 7"/>
+              <polyline points="15 7 21 7 21 13"/>
+            </svg>
+          </span>
+          <span id="weeklyRevenue" class="chip-value">—</span>
+          <span class="chip-label">Revenue/Wk</span>
         </div>
       </div>
-    </div>
-  </div>
+    </section>
 
-  <script>
-    (function(){
-      const form = document.getElementById('calcForm');
-      const rentEl = document.getElementById('rent');
-      const laborEl = document.getElementById('labor');
-      const otherEl = document.getElementById('other');
-      const costEl = document.getElementById('cost');
-      const priceEl = document.getElementById('price');
-      const daysEl = document.getElementById('days');
-      const errEl = document.getElementById('error');
-      const resultCard = document.getElementById('resultCard');
-      const resultEl = document.getElementById('result');
-      const headline = document.getElementById('headline');
-      const details = document.getElementById('details');
-      const profitPerDrinkEl = document.getElementById('profitPerDrink');
-      const monthlyDrinksEl = document.getElementById('monthlyDrinks');
-      const monthlyCostsEl = document.getElementById('monthlyCosts');
-      const resetBtn = document.getElementById('reset');
+    <!-- Sidebar: neighborhoods -->
+    <aside class="sidebar">
+      <h3 class="section-title">
+        <span class="title-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21s-7-5.4-7-11a7 7 0 0 1 14 0c0 5.6-7 11-7 11z"/>
+            <circle cx="12" cy="10" r="2.5"/>
+          </svg>
+        </span>
+        Venue Zone
+      </h3>
+      <div class="panel hood-panel">
+        <label class="field-label" for="neighborhoodSelect">Brooklyn neighborhood</label>
+        <select id="neighborhoodSelect" aria-label="Select a Brooklyn neighborhood to load average bar costs">
+          <option value="" selected>Select a neighborhood…</option>
+        </select>
+        <div id="neighborhoodCard" class="hood-card" aria-live="polite"></div>
+      </div>
+    </aside>
 
-      function formatMoney(n){
-        return '$' + Number(n).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-      }
+    <!-- Inputs -->
+    <section class="content">
+      <form id="calcForm" novalidate>
+        <div class="bento">
+          <div class="panel glow-violet-edge">
+            <div class="panel-head">
+              <span class="panel-icon icon-violet" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 9.5 12 4l9 5.5"/>
+                  <path d="M5 10v8M9.7 10v8M14.3 10v8M19 10v8"/>
+                  <path d="M3 20h18"/>
+                </svg>
+              </span>
+              <h4>Fixed Costs</h4>
+            </div>
+            <label class="field-label" for="rent">Monthly Rent</label>
+            <div class="input-wrap violet"><span class="prefix">$</span>
+              <input id="rent" name="rent" type="number" min="0" step="0.01" placeholder="6500" inputmode="decimal" autocomplete="off">
+            </div>
+            <label class="field-label" for="labor">Labor &amp; Staffing</label>
+            <div class="input-wrap violet"><span class="prefix">$</span>
+              <input id="labor" name="labor" type="number" min="0" step="0.01" placeholder="12000" inputmode="decimal" autocomplete="off">
+            </div>
+            <label class="field-label" for="other">Other Monthly Expenses</label>
+            <div class="input-wrap violet"><span class="prefix">$</span>
+              <input id="other" name="other" type="number" min="0" step="0.01" placeholder="2000" inputmode="decimal" autocomplete="off" value="0">
+            </div>
+          </div>
 
-      function showError(message){
-        errEl.textContent = message;
-        errEl.style.display = 'block';
-        resultCard.style.display = 'none';
-      }
+          <div class="panel glow-cyan-edge">
+            <div class="panel-head">
+              <span class="panel-icon icon-cyan" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                  <path d="M5 20v-7M12 20V5M19 20v-10"/>
+                </svg>
+              </span>
+              <h4>Unit Metrics</h4>
+            </div>
+            <label class="field-label" for="price">Avg. Drink Price</label>
+            <div class="input-wrap cyan"><span class="prefix">$</span>
+              <input id="price" name="price" type="number" min="0" step="0.01" placeholder="14" inputmode="decimal" autocomplete="off">
+            </div>
+            <label class="field-label" for="cost">Cost to Make One Drink</label>
+            <div class="input-wrap cyan"><span class="prefix">$</span>
+              <input id="cost" name="cost" type="number" min="0" step="0.01" placeholder="2.50" inputmode="decimal" autocomplete="off">
+            </div>
+            <label class="field-label" for="days">Days Open Per Month</label>
+            <div class="input-wrap cyan">
+              <input id="days" name="days" type="number" min="1" max="31" step="1" value="30" inputmode="numeric" autocomplete="off" class="no-prefix">
+            </div>
+          </div>
+        </div>
 
-      function clearError(){
-        errEl.textContent = '';
-        errEl.style.display = 'none';
-      }
+        <div id="error" class="error-panel" role="alert" aria-live="polite" hidden></div>
 
-      function getBreakEvenStatus(drinksPerDay) {
-        if (drinksPerDay <= 100) return 'sustainable';
-        if (drinksPerDay <= 200) return 'tight';
-        return 'unsustainable';
-      }
+        <!-- Metrics + chart -->
+        <div class="panel projection">
+          <div class="projection-head">
+            <h4>Price Sensitivity</h4>
+            <span class="realtime">
+              <span class="title-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <path d="M13 2 4 14h6l-1 8 9-12h-6z"/>
+                </svg>
+              </span>
+              Realtime
+            </span>
+          </div>
+          <p class="muted">Drinks per day needed to break even at nearby price points.</p>
+          <div class="chart-area">
+            <div id="chart" class="chart" aria-label="Drinks per day needed at nearby drink prices"></div>
+            <p id="chartEmpty" class="chart-empty">Fill in your costs and pricing to see the projection.</p>
+          </div>
+          <div class="metric-row">
+            <div class="metric"><span class="metric-label">Profit / Drink</span><span id="profitPerDrink" class="metric-value">—</span></div>
+            <div class="metric"><span class="metric-label">Margin</span><span id="marginPct" class="metric-value">—</span></div>
+            <div class="metric"><span class="metric-label">Monthly Drinks</span><span id="monthlyDrinks" class="metric-value">—</span></div>
+            <div class="metric"><span class="metric-label">Monthly Costs</span><span id="monthlyCosts" class="metric-value">—</span></div>
+          </div>
+          <div class="actions">
+            <button id="calculate" type="submit" class="btn-primary">Recalculate</button>
+            <button id="reset" type="reset" class="btn-ghost">Reset</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
 
-      form.addEventListener('submit', function(e){
-        e.preventDefault();
-        clearError();
-
-        const rent = parseFloat(rentEl.value) || 0;
-        const labor = parseFloat(laborEl.value) || 0;
-        const other = parseFloat(otherEl.value) || 0;
-        const cost = parseFloat(costEl.value) || 0;
-        const price = parseFloat(priceEl.value) || 0;
-        const days = parseInt(daysEl.value,10) || 30;
-
-        // Basic validation
-        if (rent < 0 || labor < 0 || other < 0 || cost < 0 || price < 0 || days < 1) {
-          showError('Please enter valid non-negative numbers for all fields (days must be at least 1).');
-          return;
-        }
-
-        if (price <= cost) {
-          showError('Selling price must be higher than the cost to make a drink to generate profit.');
-          return;
-        }
-
-        const profitPerDrink = price - cost;
-        const totalMonthly = rent + labor + other;
-        const monthlyDrinks = totalMonthly / profitPerDrink;
-        const drinksPerDay = monthlyDrinks / days;
-        const drinksPerDayRounded = Math.ceil(drinksPerDay);
-
-        // Update status and display
-        const status = getBreakEvenStatus(drinksPerDayRounded);
-        resultEl.className = `result ${status}`;
-        
-        headline.textContent = `You need to sell ${drinksPerDayRounded} drink${drinksPerDayRounded === 1 ? '' : 's'} per day`;
-        
-        profitPerDrinkEl.textContent = formatMoney(profitPerDrink);
-        monthlyDrinksEl.textContent = Math.ceil(monthlyDrinks).toLocaleString();
-        monthlyCostsEl.textContent = formatMoney(totalMonthly);
-
-        resultCard.style.display = 'block';
-        // Trigger reflow for animation
-        resultCard.offsetHeight;
-        resultCard.classList.add('visible');
-      });
-
-      resetBtn.addEventListener('click', function() {
-        clearError();
-        resultCard.classList.remove('visible');
-        [profitPerDrinkEl, monthlyCostsEl, monthlyDrinksEl].forEach(el => {
-          el.classList.remove('reveal');
-        });
-        setTimeout(() => resultCard.style.display = 'none', 200);
-      });
-
-      // Clear error when user corrects selling/cost fields
-      [priceEl,costEl].forEach(el => el.addEventListener('input', clearError));
-
-    })();
-  </script>
+  <footer class="footnote">
+    Neighborhood averages are illustrative estimates for Brooklyn bars. Results update as you type.
+  </footer>
 </body>
 </html>

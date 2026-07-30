@@ -1,46 +1,32 @@
-# Project Structure Updates
+# Project Updates
 
-The Bar Break-Even Calculator has been restructured for better organization:
+## 2026-07 — PRISM redesign + cleanup
 
-```
-BarBreakdownColculator/
-├── index.html           # Main HTML file
-├── css/
-│   └── styles.css      # Separated CSS styles
-├── js/
-│   └── calculator.js   # JavaScript logic
-└── README.md           # Project documentation
-```
+Full visual redesign to a dark neon glassmorphism theme ("PRISM CALC") and a
+simplification of the code.
 
-## Changes Made
+**Design**
+- New layout: hero with daily drinks target + status pill, weekly stat chips,
+  bento input panels (Fixed Costs / Unit Metrics), neighborhood sidebar
+- Montserrat typography, glass panels, ambient glows, animated light leak
+- Respects `prefers-reduced-motion`
 
-1. Separated concerns into different files:
-   - HTML structure in `index.html`
-   - Styles moved to `css/styles.css`
-   - JavaScript logic moved to `js/calculator.js`
+**New features**
+- Live recalculation on every keystroke (Recalculate button kept for parity)
+- Price sensitivity chart: drinks/day needed at ±$3 around the current price
+- Weekly drinks and weekly revenue targets, margin %
+- Neighborhood card shows averages plus a relative cost-level meter
 
-2. Added features:
-   - Other Monthly Expenses field
-   - Reset button
-   - Better visual feedback
-   - Improved mobile experience
-   - Status indicators for results
+**Code changes**
+- Neighborhood data embedded as a JS module (`js/data/brooklyn-bar-data.js`)
+  instead of fetched JSON — no more fetch/CORS failures, works from file://
+- One entry point (`js/app.js`) replaces `calculator.js` + `neighborhoods.js`
+  and the duplicated inline script in `index.html`
+- `calculator-core.js` stays pure (validate/compute/status/sensitivity)
+- Removed 9 debug/test HTML files and stale CSS scratch files
 
-## How to Use
+## Earlier — restructure
 
-1. Open `index.html` in a web browser
-2. Enter your costs and pricing information
-3. Click "Calculate Break-Even" to see results
-
-## Development
-
-- Edit `styles.css` for visual changes
-- Edit `calculator.js` for logic changes
-- Edit `index.html` for structure changes
-
-The separated files make it easier to:
-- Maintain and update code
-- Cache resources effectively
-- Collaborate with other developers
-- Debug issues
-- Add new features
+Separated the original single-file app into `index.html`, `css/styles.css`,
+and `js/`, added the Other Monthly Expenses field, reset button, status
+indicators, and mobile improvements.
